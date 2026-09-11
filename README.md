@@ -7,7 +7,6 @@
 
 Une application web interactive et moderne qui simule l'architecture de contrôle d'un feu tricolore (section unique) à l'aide d'un **Réseau de Petri (RdP)**. Basée sur un modèle mathématique strict : $R = (P, T, Pre, Post)$.
 
-> **Aperçu** : *(Ajoutez ici une capture d'écran de votre application en remplaçant ce texte par `![Capture d'écran](lien-vers-votre-image.png)`)*
 
 ---
 
@@ -31,21 +30,6 @@ Ce projet a été développé en **Vanilla Code** (sans aucun framework externe 
 
 ---
 
-## 🚀 Installation & Utilisation
-
-Puisque le projet ne nécessite aucune dépendance ou processus de build, son lancement est instantané :
-
-1. **Cloner le dépôt :**
-   ```bash
-   git clone [https://github.com/votre-nom-utilisateur/nom-du-repo.git](https://github.com/votre-nom-utilisateur/nom-du-repo.git)
-
-```
-
-2. **Ouvrir le fichier :**
-Double-cliquez simplement sur le fichier `index.html` pour l'ouvrir dans le navigateur web de votre choix (Chrome, Firefox, Safari, Edge...).
-
----
-
 ## 🧠 Comprendre le Modèle (Réseau de Petri)
 
 Le système modélise le cycle classique d'un feu de signalisation.
@@ -66,20 +50,6 @@ La séquence théorique de fonctionnement est la suivante :
 
 La place **Oa (Orange allumé)** est traversée deux fois dans le cycle (avant et après le vert). Ainsi, les transitions `Oa ➔ Va` et `Oa ➔ Ra` se disputent le même jeton. L'interface met en évidence ce conflit (en violet) lorsque les deux voies sont mathématiquement possibles.
 
----
-
-## 🤝 Contribution
-
-Les contributions, signalements de bugs et demandes de fonctionnalités sont les bienvenus !
-N'hésitez pas à consulter la page des [issues](https://www.google.com/search?q=https://github.com/votre-nom-utilisateur/nom-du-repo/issues) si vous souhaitez proposer des améliorations.
-
-1. Forkez le projet
-2. Créez votre branche (`git checkout -b feature/AmazingFeature`)
-3. Commitez vos changements (`git commit -m 'Ajout de la fonctionnalité X'`)
-4. Pushez vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une Pull Request
-
----
 
 ## 📄 Licence
 
