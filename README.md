@@ -1,56 +1,52 @@
-# 🚦 Simulation de Réseau de Petri - Feu Tricolore
+# 🚦 Petri Net Simulation - Traffic Light
 
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-success?style=for-the-badge)
-
-Une application web interactive et moderne qui simule l'architecture de contrôle d'un feu tricolore (section unique) à l'aide d'un **Réseau de Petri (RdP)**. Basée sur un modèle mathématique strict : $R = (P, T, Pre, Post)$.
-
+An interactive, modern web application that simulates the control architecture of a single-section traffic light using a **Petri Net (PN)**. Based on a strict mathematical model: $R = (P, T, Pre, Post)$.
 
 ---
 
-## ✨ Fonctionnalités
+## ✨ Features
 
-* 🎨 **Design Moderne & Responsive** : Interface épurée s'adaptant parfaitement aux écrans d'ordinateurs et de mobiles.
-* 🌓 **Mode Sombre / Clair** : Bascule fluide entre le Dark Mode et le Light Mode, avec sauvegarde des préférences de l'utilisateur.
-* ⚙️ **Graphe SVG Interactif** : Génération vectorielle du graphe. Les transitions franchissables s'illuminent en vert, et les conflits structurels en violet. Le franchissement manuel se fait par un simple clic.
-* ▶️ **Lecture Automatique** : Mode de simulation autonome avec un slider pour ajuster la vitesse de franchissement en temps réel.
-* 🚥 **Rendu Physique** : Visualisation "néon" synchronisée de l'état réel du feu (Rouge, Orange, Vert).
-* 📊 **Suivi Mathématique** : Affichage dynamique du marquage courant $M$, des matrices d'incidence (Pré $W-$ et Post $W+$), et de l'historique des franchissements.
-
----
-
-## 🛠️ Technologies Utilisées
-
-Ce projet a été développé en **Vanilla Code** (sans aucun framework externe ni bibliothèque), garantissant des performances optimales et une compatibilité maximale :
-* **HTML5** (Structure sémantique et intégration SVG)
-* **CSS3** (Variables CSS, Grid/Flexbox, Transitions, Glassmorphism)
-* **JavaScript ES6** (Logique métier du RdP, manipulation du DOM, boucle de rendu)
+* 🎨 **Modern & Responsive Design**: Clean interface perfectly adapted for desktop and mobile screens.
+* 🌓 **Dark / Light Mode**: Smooth toggling between Dark and Light Mode, with user preference saving.
+* ⚙️ **Interactive SVG Graph**: Vector graph generation. Enabled transitions light up in green, and structural conflicts in purple. Manual firing is done with a single click.
+* ▶️ **Auto-Play**: Autonomous simulation mode with a slider to adjust the firing speed in real-time.
+* 🚥 **Physical Rendering**: Synchronized "neon" visualization of the actual traffic light state (Red, Yellow, Green).
+* 📊 **Mathematical Tracking**: Dynamic display of the current marking $M$, incidence matrices (Pre $W-$ and Post $W+$), and firing history.
 
 ---
 
-## 🧠 Comprendre le Modèle (Réseau de Petri)
+## 🛠️ Technologies Used
 
-Le système modélise le cycle classique d'un feu de signalisation.
+This project was built entirely with **Vanilla Code** (no external frameworks or libraries), ensuring optimal performance and maximum compatibility:
 
-### 📍 Places (États)
+* **HTML5** (Semantic structure and SVG integration)
+* **CSS3** (CSS Variables, Grid/Flexbox, Transitions, Glassmorphism)
+* **JavaScript ES6** (Petri Net business logic, DOM manipulation, rendering loop)
 
-* **Ra** / **Re** : Rouge Allumé / Rouge Éteint
-* **Oa** / **Oe** : Orange Allumé / Orange Éteint
-* **Va** / **Ve** : Vert Allumé / Vert Éteint
+---
 
-### 🔄 Cycle de fonctionnement
+## 🧠 Understanding the Model (Petri Net)
 
-Le feu démarre à l'état initial : **Rouge allumé** (`Ra=1`, `Oe=1`, `Ve=1`).
-La séquence théorique de fonctionnement est la suivante :
-👉 `Ra` (Rouge) ➔ `Oa` (Orange) ➔ `Va` (Vert) ➔ `Oa` (Orange) ➔ `Ra` (Rouge)...
+The system models a standard traffic light cycle.
 
-### ⚡ Conflit Structurel
+### 📍 Places (States)
 
-La place **Oa (Orange allumé)** est traversée deux fois dans le cycle (avant et après le vert). Ainsi, les transitions `Oa ➔ Va` et `Oa ➔ Ra` se disputent le même jeton. L'interface met en évidence ce conflit (en violet) lorsque les deux voies sont mathématiquement possibles.
+* **Ra** / **Re**: Red On / Red Off
+* **Oa** / **Oe**: Yellow On / Yellow Off
+* **Va** / **Ve**: Green On / Green Off
 
+### 🔄 Operating Cycle
 
-## 📄 Licence
+The traffic light starts at the initial state: **Red on** (`Ra=1`, `Oe=1`, `Ve=1`).
+The theoretical operating sequence is as follows:
+👉 `Ra` (Red) ➔ `Oa` (Yellow) ➔ `Va` (Green) ➔ `Oa` (Yellow) ➔ `Ra` (Red)...
 
-Distribué sous la licence MIT. Voir le fichier `LICENSE` pour plus d'informations.
+### ⚡ Structural Conflict
+
+The **Oa (Yellow on)** place is traversed twice in the cycle (before and after green). Therefore, the `Oa ➔ Va` and `Oa ➔ Ra` transitions compete for the same token. The interface highlights this conflict (in purple) when both paths are mathematically possible.
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See the `LICENSE` file for more information.
