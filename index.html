@@ -284,14 +284,6 @@
       <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">☀️</button>
     </div>
     <h1>Simulation de Carrefour</h1>
-    <p>Disposition fidèle à la Figure 2 : L'architecture de contrôle d'un feu tricolore à section unique modélisée via un réseau de Petri.</p>
-    
-    <div class="note">
-      <b>État Initial :</b> Le feu démarre au rouge. Le marquage initial place les jetons dans <b>Ra</b> (Rouge allumé), <b>Oe</b> (Orange éteint) et <b>Ve</b> (Vert éteint).
-    </div>
-    <div class="note conflict-note">
-      <b>Conflit structurel :</b> Séquence attendue : Ra → Oa → Va → Oa → Ra. La place <b>Oa</b> est sollicitée deux fois. Les transitions <b>Oa→Va</b> et <b>Oa→Ra</b> se disputent un jeton, créant un conflit (affiché en violet).
-    </div>
   </header>
 
   <div class="layout">
@@ -356,7 +348,7 @@
   </div>
 
   <footer>
-    Modèle : R = (P,T,Pre,Post) · M(Pi) ≥ Pre(Pi,Tj) · Séquence : Ra → Oa → Va → Oa → Ra
+    Modèle : R = (P,T,Pre,Post) · M(Pi) ≥ Pre(Pi,Tj)
   </footer>
 </div>
 
