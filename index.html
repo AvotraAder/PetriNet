@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RDP — Carrefour à feu tricolore</title>
+<title>RDP — Feu tricolore (section unique)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -20,7 +20,6 @@
     --red:#e2554f;
     --orange:#e2a53f;
     --green:#4caf6e;
-    --conflict:#c86bd8;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -34,7 +33,7 @@
     min-height:100vh;
     padding:28px 20px 60px;
   }
-  .wrap{max-width:1220px; margin:0 auto;}
+  .wrap{max-width:1080px; margin:0 auto;}
   header{margin-bottom:22px;}
   .kicker{
     font-family:'IBM Plex Mono', monospace;
@@ -103,14 +102,11 @@
   #graphSvg{width:100%; height:auto; display:block;}
   .place-circle{fill:var(--asphalt-2); stroke:var(--steel); stroke-width:2;}
   .place-label{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:10.5px;}
-  .place-name{fill:var(--paint); font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:500;}
   .token{fill:var(--amber);}
   .trans-bar{fill:#3a4048; stroke:var(--steel-dim); stroke-width:1.5; cursor:default; transition:fill .25s, stroke .25s, filter .25s;}
   .trans-bar.enabled{fill:#3f5240; stroke:var(--green); cursor:pointer; filter:drop-shadow(0 0 5px rgba(76,175,110,0.45));}
-  .trans-bar.conflict{stroke:var(--conflict); filter:drop-shadow(0 0 6px rgba(200,107,216,0.55));}
   .trans-label{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:11px; pointer-events:none;}
   .arc{stroke:var(--steel-dim); stroke-width:1.5; fill:none;}
-  .zone-label{fill:var(--steel-dim); font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.05em;}
 
   .controls{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px;}
   button{
@@ -132,13 +128,10 @@
   input[type=range]{accent-color:var(--amber);}
 
   .hint{font-size:12.5px; color:var(--paint-dim); line-height:1.5; margin-top:10px;}
-  .hint b{color:var(--conflict); font-weight:600;}
 
-  .carrefour{display:flex; justify-content:center; gap:64px; padding:22px 10px 6px;}
-  .axe{display:flex; flex-direction:column; align-items:center; gap:8px;}
-  .axe-label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--paint-dim); letter-spacing:0.03em;}
-  .feu{display:flex; flex-direction:column; gap:6px; background:#111417; border:1px solid var(--line); border-radius:8px; padding:8px 10px;}
-  .lamp{width:22px; height:22px; border-radius:50%; background:#2a2e33; opacity:0.35; transition:opacity .3s, box-shadow .3s;}
+  .carrefour{display:flex; justify-content:center; padding:22px 10px 6px;}
+  .feu{display:flex; flex-direction:column; gap:6px; background:#111417; border:1px solid var(--line); border-radius:8px; padding:10px 12px;}
+  .lamp{width:24px; height:24px; border-radius:50%; background:#2a2e33; opacity:0.35; transition:opacity .3s, box-shadow .3s;}
   .lamp.r{background:var(--red);} .lamp.o{background:var(--orange);} .lamp.v{background:var(--green);}
   .lamp.lit{opacity:1;}
   .lamp.r.lit{box-shadow:0 0 12px rgba(226,85,79,0.75);}
@@ -146,7 +139,7 @@
   .lamp.v.lit{box-shadow:0 0 12px rgba(76,175,110,0.75);}
 
   .marking-grid{
-    display:grid; grid-template-columns:repeat(7,1fr);
+    display:grid; grid-template-columns:repeat(6,1fr);
     gap:6px; font-family:'IBM Plex Mono',monospace; font-size:11px; text-align:center;
     margin-bottom:16px;
   }
@@ -156,8 +149,8 @@
   .mk-cell.hot{border-color:var(--amber);}
   .mk-cell.hot .v{color:var(--amber);}
 
-  table.matrix{border-collapse:collapse; width:100%; font-family:'IBM Plex Mono',monospace; font-size:10.5px; margin-bottom:6px;}
-  table.matrix th, table.matrix td{border:1px solid var(--line); text-align:center; padding:4px 3px; color:var(--paint-dim);}
+  table.matrix{border-collapse:collapse; width:100%; font-family:'IBM Plex Mono',monospace; font-size:11px; margin-bottom:6px;}
+  table.matrix th, table.matrix td{border:1px solid var(--line); text-align:center; padding:5px 4px; color:var(--paint-dim);}
   table.matrix th{color:var(--steel); font-weight:500;}
   table.matrix td.nz{color:var(--paint); font-weight:600;}
 
@@ -167,7 +160,6 @@
 
   .log{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--paint-dim); max-height:130px; overflow-y:auto; line-height:1.7; border-top:1px solid var(--line); padding-top:10px; margin-top:14px;}
   .log span{color:var(--amber); font-weight:600;}
-  .log span.b{color:var(--conflict);}
 
   footer{margin-top:26px; font-size:12px; color:var(--paint-dim); text-align:center;}
 </style>
@@ -175,48 +167,35 @@
 <body>
 <div class="wrap">
   <header>
-    <p class="kicker">RÉSEAUX DE PETRI — R = (P, T, Pre, Post) · adapté de l'Exercice 2 (Figure 2)</p>
-    <h1>RDP du carrefour — Section A + Section B combinées</h1>
-    <p>Chaque axe (A et B) reprend exactement le vocabulaire de la Figure 2 de l'examen : une paire de places <b>Allumé / Éteint</b> pour chaque couleur (Ra/Re, Oa/Oe, Va/Ve), reliées par les transitions de franchissement. Les deux sections partagent une place ressource <b>L « Carrefour libre »</b> qui empêche les deux axes d'être verts en même temps — c'est la combinaison demandée par l'énoncé de l'Exercice 2, réutilisée ici comme RDP de projet (Exercice 3).</p>
-    <div class="note"><b>Remarque sur la Figure 2 originale :</b> sur la photo de l'examen, la place <b>Re</b> est redessinée deux fois (en haut et en bas) pour éviter que les arcs ne se croisent trop sur la page — c'est le même nœud logique, dessiné deux fois par souci de lisibilité, une technique courante en RDP manuscrit. Le modèle ci-dessous garde la même idée (Allumé/Éteint par couleur + ressource partagée) mais donne un nom distinct à chaque place pour que le graphe soit lisible sans ambiguïté et reproductible pour la soutenance.</div>
+    <p class="kicker">RÉSEAUX DE PETRI — R = (P, T, Pre, Post) · Exercice 2 (Figure 2), section unique</p>
+    <h1>RDP du carrefour — un seul axe (feu tricolore)</h1>
+    <p>Le réseau reprend exactement la Figure 2 de l'examen : une paire de places <b>Allumé / Éteint</b> pour chaque couleur (Ra/Re, Oa/Oe, Va/Ve), reliées par trois transitions de franchissement qui font tourner le cycle Rouge → Vert → Orange → Rouge. Un seul axe est modélisé ici, sans ressource partagée puisqu'il n'y a qu'une seule section.</p>
+    <div class="note"><b>Remarque sur la Figure 2 originale :</b> sur la photo de l'examen, la place <b>Re</b> est redessinée deux fois (en haut et en bas) pour éviter que les arcs ne se croisent trop sur la page — la place du bas correspond en réalité à <b>Ve</b> (Vert éteint), qui porte le jeton initial avec Ra et Oe. Le modèle ci-dessous nomme chaque place distinctement pour que le graphe soit lisible sans ambiguïté et reproductible pour la soutenance.</div>
   </header>
 
   <div class="layout">
     <div>
       <div class="panel">
-        <h2>Graphe du réseau (Section A + Section B + ressource L)</h2>
-        <svg id="graphSvg" viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg">
+        <h2>Graphe du réseau (section unique)</h2>
+        <svg id="graphSvg" viewBox="0 0 700 560" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="var(--steel-dim)"></path>
             </marker>
           </defs>
-          <text x="170" y="30" text-anchor="middle" class="zone-label">SECTION A</text>
-          <text x="830" y="30" text-anchor="middle" class="zone-label">SECTION B</text>
           <g id="arcsLayer"></g>
           <g id="nodesLayer"></g>
         </svg>
-        <p class="hint">Conflit structurel : <b>L</b> est en amont de <b>T1A</b> et <b>T1B</b> — au marquage initial, les deux axes sont candidats pour passer au vert, mais un seul jeton est disponible dans L (exactement la notion « Rdp avec conflit » du cours).</p>
+        <p class="hint">Règle de franchissement : une transition Tj est franchissable si chaque place en amont contient au moins <b>Pre(Pi,Tj)</b> jeton(s). Cliquez sur une transition en surbrillance verte pour la franchir manuellement.</p>
       </div>
 
       <div class="panel" style="margin-top:18px;">
         <h2>Carrefour — vue physique</h2>
         <div class="carrefour">
-          <div class="axe">
-            <div class="axe-label">SECTION A</div>
-            <div class="feu">
-              <div class="lamp r" id="lampAr"></div>
-              <div class="lamp o" id="lampAo"></div>
-              <div class="lamp v" id="lampAv"></div>
-            </div>
-          </div>
-          <div class="axe">
-            <div class="axe-label">SECTION B</div>
-            <div class="feu">
-              <div class="lamp r" id="lampBr"></div>
-              <div class="lamp o" id="lampBo"></div>
-              <div class="lamp v" id="lampBv"></div>
-            </div>
+          <div class="feu">
+            <div class="lamp r" id="lampR"></div>
+            <div class="lamp o" id="lampO"></div>
+            <div class="lamp v" id="lampV"></div>
           </div>
         </div>
       </div>
@@ -253,37 +232,25 @@
 </div>
 
 <script>
-/* ---------- Modèle du RDP ---------- */
-function axisPlaces(s){ return [`Ra${s}`,`Re${s}`,`Oa${s}`,`Oe${s}`,`Va${s}`,`Ve${s}`]; }
-const places = [...axisPlaces("A"), ...axisPlaces("B"), "L"];
-const placeNames = {};
-["A","B"].forEach(s=>{
-  placeNames[`Ra${s}`]=`${s} · Rouge allumé`;
-  placeNames[`Re${s}`]=`${s} · Rouge éteint`;
-  placeNames[`Oa${s}`]=`${s} · Orange allumé`;
-  placeNames[`Oe${s}`]=`${s} · Orange éteint`;
-  placeNames[`Va${s}`]=`${s} · Vert allumé`;
-  placeNames[`Ve${s}`]=`${s} · Vert éteint`;
-});
-placeNames.L = "Carrefour libre";
+/* ---------- Modèle du RDP (une seule section) ---------- */
+const places = ["Ra","Re","Oa","Oe","Va","Ve"];
+const placeNames = {
+  Ra:"Rouge allumé", Re:"Rouge éteint",
+  Oa:"Orange allumé", Oe:"Orange éteint",
+  Va:"Vert allumé", Ve:"Vert éteint"
+};
 
-function axisNet(s){
-  return {
-    [`T1${s}`]:{pre:{[`Ra${s}`]:1,[`Ve${s}`]:1,L:1}, post:{[`Re${s}`]:1,[`Va${s}`]:1}},
-    [`T2${s}`]:{pre:{[`Va${s}`]:1,[`Oe${s}`]:1},       post:{[`Ve${s}`]:1,[`Oa${s}`]:1,L:1}},
-    [`T3${s}`]:{pre:{[`Oa${s}`]:1,[`Re${s}`]:1},       post:{[`Oe${s}`]:1,[`Ra${s}`]:1}},
-  };
-}
-const net = {...axisNet("A"), ...axisNet("B")};
+const net = {
+  T1:{pre:{Ra:1, Ve:1}, post:{Re:1, Va:1}},   // Rouge -> Vert
+  T2:{pre:{Va:1, Oe:1}, post:{Ve:1, Oa:1}},   // Vert -> Orange
+  T3:{pre:{Oa:1, Re:1}, post:{Oe:1, Ra:1}},   // Orange -> Rouge
+};
 const transitions = Object.keys(net);
 
-const initialMarking = {};
-places.forEach(p=>initialMarking[p]=0);
-["A","B"].forEach(s=>{ initialMarking[`Ra${s}`]=1; initialMarking[`Oe${s}`]=1; initialMarking[`Ve${s}`]=1; });
-initialMarking.L = 1;
+const initialMarking = {Ra:1, Re:0, Oa:0, Oe:1, Va:0, Ve:1};
 let marking = {...initialMarking};
 
-const autoSequence = ["T1A","T2A","T3A","T1B","T2B","T3B"];
+const autoSequence = ["T1","T2","T3"];
 let seqIndex = 0;
 let playing = false;
 let timer = null;
@@ -307,36 +274,18 @@ function fire(t){
 
 /* ---------- Layout du graphe ---------- */
 const layout = {
-  RaA:{x:170,y:70},  T1A:{x:170,y:150},
-  VaA:{x:170,y:230}, T2A:{x:170,y:310},
-  OaA:{x:170,y:390}, T3A:{x:170,y:470},
-  VeA:{x:310,y:150}, ReA:{x:310,y:310}, OeA:{x:310,y:470},
-
-  RaB:{x:830,y:70},  T1B:{x:830,y:150},
-  VaB:{x:830,y:230}, T2B:{x:830,y:310},
-  OaB:{x:830,y:390}, T3B:{x:830,y:470},
-  VeB:{x:690,y:150}, ReB:{x:690,y:310}, OeB:{x:690,y:470},
-
-  L:{x:500,y:230}
+  Ra:{x:280,y:70},  T1:{x:280,y:150},
+  Va:{x:280,y:230}, T2:{x:280,y:310},
+  Oa:{x:280,y:390}, T3:{x:280,y:470},
+  Ve:{x:440,y:150}, Re:{x:440,y:310}, Oe:{x:440,y:470}
 };
 const arcs = [
-  // Section A cycle
-  {from:"RaA",to:"T1A",bend:0}, {from:"T1A",to:"VaA",bend:0},
-  {from:"VaA",to:"T2A",bend:0}, {from:"T2A",to:"OaA",bend:0},
-  {from:"OaA",to:"T3A",bend:0}, {from:"T3A",to:"RaA",bend:-140},
-  {from:"VeA",to:"T1A",bend:0}, {from:"T2A",to:"VeA",bend:60},
-  {from:"ReA",to:"T3A",bend:0}, {from:"T1A",to:"ReA",bend:60},
-  {from:"OeA",to:"T2A",bend:60}, {from:"T3A",to:"OeA",bend:0},
-  // Section B cycle (mirrored)
-  {from:"RaB",to:"T1B",bend:0}, {from:"T1B",to:"VaB",bend:0},
-  {from:"VaB",to:"T2B",bend:0}, {from:"T2B",to:"OaB",bend:0},
-  {from:"OaB",to:"T3B",bend:0}, {from:"T3B",to:"RaB",bend:140},
-  {from:"VeB",to:"T1B",bend:0}, {from:"T2B",to:"VeB",bend:-60},
-  {from:"ReB",to:"T3B",bend:0}, {from:"T1B",to:"ReB",bend:-60},
-  {from:"OeB",to:"T2B",bend:-60}, {from:"T3B",to:"OeB",bend:0},
-  // Ressource partagee
-  {from:"L",to:"T1A",bend:0}, {from:"T2A",to:"L",bend:0},
-  {from:"L",to:"T1B",bend:0}, {from:"T2B",to:"L",bend:0},
+  {from:"Ra",to:"T1",bend:0}, {from:"T1",to:"Va",bend:0},
+  {from:"Va",to:"T2",bend:0}, {from:"T2",to:"Oa",bend:0},
+  {from:"Oa",to:"T3",bend:0}, {from:"T3",to:"Ra",bend:-140},
+  {from:"Ve",to:"T1",bend:0}, {from:"T2",to:"Ve",bend:60},
+  {from:"Re",to:"T3",bend:0}, {from:"T1",to:"Re",bend:60},
+  {from:"Oe",to:"T2",bend:60}, {from:"T3",to:"Oe",bend:0},
 ];
 const R=24, TW=15, TH=48;
 
@@ -363,12 +312,8 @@ function pathFor(a){
   const mx=(p1.x+p2.x)/2, my=(p1.y+p2.y)/2;
   const len = Math.hypot(dx,dy)||1;
   const nx=-dy/len, ny=dx/len;
-  const cx=mx+nx*(bend/60), cy=my+ny*(bend/60) + (bend>80||bend<-80 ? 0:0);
-  const cx2 = mx + nx*(Math.abs(bend)>90?0.35:0.55)*bend/Math.abs(bend)* (Math.abs(bend));
-  // simplified single control point
-  const off = bend;
-  const ctrlx = mx + nx*off*0.6;
-  const ctrly = my + ny*off*0.6;
+  const ctrlx = mx + nx*bend*0.6;
+  const ctrly = my + ny*bend*0.6;
   return `M${p1.x},${p1.y} Q${ctrlx},${ctrly} ${p2.x},${p2.y}`;
 }
 
@@ -390,15 +335,6 @@ function renderArcs(){
 function renderNodes(){
   nodesLayer.innerHTML = "";
   const en = new Set(enabledSet());
-  const enabledList = [...en];
-  const conflicting = new Set();
-  enabledList.forEach(t1=>{
-    enabledList.forEach(t2=>{
-      if(t1>=t2) return;
-      const shared = Object.keys(net[t1].pre).some(p=>net[t2].pre[p]);
-      if(shared){ conflicting.add(t1); conflicting.add(t2); }
-    });
-  });
 
   places.forEach(p=>{
     const {x,y} = layout[p];
@@ -431,7 +367,6 @@ function renderNodes(){
     rect.setAttribute("rx", 3);
     let cls = "trans-bar";
     if(en.has(t)) cls += " enabled";
-    if(conflicting.has(t)) cls += " conflict";
     rect.setAttribute("class", cls);
     rect.addEventListener("click", ()=>{ manualFire(t); });
     g.appendChild(rect);
@@ -475,13 +410,12 @@ function renderMatrix(kind){
 function renderLog(){
   const host = document.getElementById("log");
   if(history.length===0){ host.innerHTML = "<em>Aucun franchissement pour l'instant.</em>"; return; }
-  host.innerHTML = "Séquence : " + history.map(t=>`<span class="${t[t.length-1]==='B'?'b':''}">${t}</span>`).join(" → ");
+  host.innerHTML = "Séquence : " + history.map(t=>`<span>${t}</span>`).join(" → ");
   host.scrollTop = host.scrollHeight;
 }
 function renderLamps(){
   const setLamp = (id, lit)=>{ document.getElementById(id).classList.toggle("lit", lit); };
-  setLamp("lampAr", marking.RaA>0); setLamp("lampAo", marking.OaA>0); setLamp("lampAv", marking.VaA>0);
-  setLamp("lampBr", marking.RaB>0); setLamp("lampBo", marking.OaB>0); setLamp("lampBv", marking.VaB>0);
+  setLamp("lampR", marking.Ra>0); setLamp("lampO", marking.Oa>0); setLamp("lampV", marking.Va>0);
 }
 function renderAll(){
   renderNodes(); renderMarking(); renderLog(); renderLamps();
