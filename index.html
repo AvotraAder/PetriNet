@@ -34,7 +34,7 @@
     min-height:100vh;
     padding:28px 20px 60px;
   }
-  .wrap{max-width:1180px; margin:0 auto;}
+  .wrap{max-width:1220px; margin:0 auto;}
   header{margin-bottom:22px;}
   .kicker{
     font-family:'IBM Plex Mono', monospace;
@@ -44,25 +44,39 @@
     margin:0 0 8px;
   }
   h1{
-    font-size:clamp(24px,3.4vw,34px);
+    font-size:clamp(22px,3.2vw,32px);
     font-weight:700;
     margin:0 0 10px;
     line-height:1.15;
   }
   header p{
-    max-width:640px;
+    max-width:700px;
     color:#c8cdd4;
     font-size:15px;
     line-height:1.55;
-    margin:0;
+    margin:0 0 6px;
   }
+  .note{
+    max-width:760px;
+    font-size:13px;
+    color:var(--paint-dim);
+    background:var(--asphalt-2);
+    border:1px solid var(--line);
+    border-left:3px solid var(--amber);
+    border-radius:6px;
+    padding:10px 14px;
+    line-height:1.55;
+    margin-top:12px;
+  }
+  .note b{color:var(--paint);}
+
   .layout{
     display:grid;
-    grid-template-columns:1.55fr 1fr;
+    grid-template-columns:1.6fr 1fr;
     gap:20px;
     margin-top:26px;
   }
-  @media (max-width:920px){ .layout{grid-template-columns:1fr;} }
+  @media (max-width:960px){ .layout{grid-template-columns:1fr;} }
 
   .panel{
     background:var(--panel);
@@ -72,8 +86,6 @@
   }
   .panel h2{
     font-size:13px;
-    text-transform:none;
-    letter-spacing:0.02em;
     color:var(--steel);
     margin:0 0 14px;
     font-weight:600;
@@ -88,23 +100,18 @@
     display:inline-block;
   }
 
-  /* --- graph --- */
   #graphSvg{width:100%; height:auto; display:block;}
   .place-circle{fill:var(--asphalt-2); stroke:var(--steel); stroke-width:2;}
-  .place-circle.enabled-src{stroke:var(--amber);}
-  .place-label{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:11px;}
+  .place-label{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:10.5px;}
   .place-name{fill:var(--paint); font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:500;}
   .token{fill:var(--amber);}
   .trans-bar{fill:#3a4048; stroke:var(--steel-dim); stroke-width:1.5; cursor:default; transition:fill .25s, stroke .25s, filter .25s;}
   .trans-bar.enabled{fill:#3f5240; stroke:var(--green); cursor:pointer; filter:drop-shadow(0 0 5px rgba(76,175,110,0.45));}
   .trans-bar.conflict{stroke:var(--conflict); filter:drop-shadow(0 0 6px rgba(200,107,216,0.55));}
-  .trans-bar.firing{fill:var(--amber); stroke:var(--amber);}
   .trans-label{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:11px; pointer-events:none;}
-  .arc{stroke:var(--steel-dim); stroke-width:1.6; fill:none;}
-  .arc.active{stroke:var(--amber); stroke-width:2;}
-  .arc-weight{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:10px;}
+  .arc{stroke:var(--steel-dim); stroke-width:1.5; fill:none;}
+  .zone-label{fill:var(--steel-dim); font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.05em;}
 
-  /* --- controls --- */
   .controls{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px;}
   button{
     font-family:'Space Grotesk', sans-serif;
@@ -121,24 +128,16 @@
   button:active{transform:translateY(1px);}
   button.primary{background:var(--amber); color:#241a05; border-color:var(--amber);}
   button.primary:hover{filter:brightness(1.06);}
-  button:disabled{opacity:0.4; cursor:not-allowed;}
   .speed-row{display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--paint-dim); margin-left:auto;}
   input[type=range]{accent-color:var(--amber);}
 
-  .hint{font-size:12.5px; color:var(--paint-dim); line-height:1.5; margin-top:6px;}
+  .hint{font-size:12.5px; color:var(--paint-dim); line-height:1.5; margin-top:10px;}
   .hint b{color:var(--conflict); font-weight:600;}
 
-  /* --- carrefour mini --- */
-  .carrefour{
-    display:flex; justify-content:center; gap:64px;
-    padding:22px 10px 6px;
-  }
+  .carrefour{display:flex; justify-content:center; gap:64px; padding:22px 10px 6px;}
   .axe{display:flex; flex-direction:column; align-items:center; gap:8px;}
   .axe-label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--paint-dim); letter-spacing:0.03em;}
-  .feu{
-    display:flex; flex-direction:column; gap:6px;
-    background:#111417; border:1px solid var(--line); border-radius:8px; padding:8px 10px;
-  }
+  .feu{display:flex; flex-direction:column; gap:6px; background:#111417; border:1px solid var(--line); border-radius:8px; padding:8px 10px;}
   .lamp{width:22px; height:22px; border-radius:50%; background:#2a2e33; opacity:0.35; transition:opacity .3s, box-shadow .3s;}
   .lamp.r{background:var(--red);} .lamp.o{background:var(--orange);} .lamp.v{background:var(--green);}
   .lamp.lit{opacity:1;}
@@ -146,37 +145,29 @@
   .lamp.o.lit{box-shadow:0 0 12px rgba(226,165,63,0.75);}
   .lamp.v.lit{box-shadow:0 0 12px rgba(76,175,110,0.75);}
 
-  /* --- marking + matrix --- */
   .marking-grid{
     display:grid; grid-template-columns:repeat(7,1fr);
-    gap:6px; font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center;
+    gap:6px; font-family:'IBM Plex Mono',monospace; font-size:11px; text-align:center;
     margin-bottom:16px;
   }
-  .mk-cell{background:var(--asphalt-2); border:1px solid var(--line); border-radius:6px; padding:8px 2px;}
-  .mk-cell .p{color:var(--steel); font-size:10.5px; display:block; margin-bottom:4px;}
-  .mk-cell .v{font-size:15px; font-weight:600; color:var(--paint);}
+  .mk-cell{background:var(--asphalt-2); border:1px solid var(--line); border-radius:6px; padding:7px 2px;}
+  .mk-cell .p{color:var(--steel); font-size:9.5px; display:block; margin-bottom:3px;}
+  .mk-cell .v{font-size:14px; font-weight:600; color:var(--paint);}
   .mk-cell.hot{border-color:var(--amber);}
   .mk-cell.hot .v{color:var(--amber);}
 
-  table.matrix{border-collapse:collapse; width:100%; font-family:'IBM Plex Mono',monospace; font-size:11.5px; margin-bottom:6px;}
-  table.matrix th, table.matrix td{border:1px solid var(--line); text-align:center; padding:5px 4px; color:var(--paint-dim);}
+  table.matrix{border-collapse:collapse; width:100%; font-family:'IBM Plex Mono',monospace; font-size:10.5px; margin-bottom:6px;}
+  table.matrix th, table.matrix td{border:1px solid var(--line); text-align:center; padding:4px 3px; color:var(--paint-dim);}
   table.matrix th{color:var(--steel); font-weight:500;}
   table.matrix td.nz{color:var(--paint); font-weight:600;}
 
   .tabs{display:flex; gap:6px; margin-bottom:10px;}
-  .tab{
-    font-family:'IBM Plex Mono',monospace; font-size:11.5px;
-    padding:6px 10px; border-radius:6px; cursor:pointer;
-    border:1px solid var(--line); color:var(--paint-dim);
-  }
+  .tab{font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 10px; border-radius:6px; cursor:pointer; border:1px solid var(--line); color:var(--paint-dim);}
   .tab.active{color:var(--paint); border-color:var(--steel); background:var(--asphalt-2);}
 
-  .log{
-    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--paint-dim);
-    max-height:120px; overflow-y:auto; line-height:1.7;
-    border-top:1px solid var(--line); padding-top:10px; margin-top:14px;
-  }
+  .log{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--paint-dim); max-height:130px; overflow-y:auto; line-height:1.7; border-top:1px solid var(--line); padding-top:10px; margin-top:14px;}
   .log span{color:var(--amber); font-weight:600;}
+  .log span.b{color:var(--conflict);}
 
   footer{margin-top:26px; font-size:12px; color:var(--paint-dim); text-align:center;}
 </style>
@@ -184,36 +175,35 @@
 <body>
 <div class="wrap">
   <header>
-    <p class="kicker">RÉSEAUX DE PETRI — R = (P, T, Pre, Post)</p>
-    <h1>Simulateur RDP d'un feu tricolore de carrefour</h1>
-    <p>Deux axes (A et B) se partagent une ressource unique — le carrefour — modélisée par la place P7. Chaque transition ne se franchit que si toutes ses places d'entrée possèdent un marquage suffisant. Cliquez sur une transition franchissable (en vert) pour l'exécuter, ou lancez le mode automatique.</p>
+    <p class="kicker">RÉSEAUX DE PETRI — R = (P, T, Pre, Post) · adapté de l'Exercice 2 (Figure 2)</p>
+    <h1>RDP du carrefour — Section A + Section B combinées</h1>
+    <p>Chaque axe (A et B) reprend exactement le vocabulaire de la Figure 2 de l'examen : une paire de places <b>Allumé / Éteint</b> pour chaque couleur (Ra/Re, Oa/Oe, Va/Ve), reliées par les transitions de franchissement. Les deux sections partagent une place ressource <b>L « Carrefour libre »</b> qui empêche les deux axes d'être verts en même temps — c'est la combinaison demandée par l'énoncé de l'Exercice 2, réutilisée ici comme RDP de projet (Exercice 3).</p>
+    <div class="note"><b>Remarque sur la Figure 2 originale :</b> sur la photo de l'examen, la place <b>Re</b> est redessinée deux fois (en haut et en bas) pour éviter que les arcs ne se croisent trop sur la page — c'est le même nœud logique, dessiné deux fois par souci de lisibilité, une technique courante en RDP manuscrit. Le modèle ci-dessous garde la même idée (Allumé/Éteint par couleur + ressource partagée) mais donne un nom distinct à chaque place pour que le graphe soit lisible sans ambiguïté et reproductible pour la soutenance.</div>
   </header>
 
   <div class="layout">
-    <!-- LEFT: graph + carrefour -->
     <div>
       <div class="panel">
-        <h2>Graphe du réseau</h2>
-        <svg id="graphSvg" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg">
+        <h2>Graphe du réseau (Section A + Section B + ressource L)</h2>
+        <svg id="graphSvg" viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="var(--steel-dim)"></path>
             </marker>
-            <marker id="arrowActive" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 z" fill="var(--amber)"></path>
-            </marker>
           </defs>
+          <text x="170" y="30" text-anchor="middle" class="zone-label">SECTION A</text>
+          <text x="830" y="30" text-anchor="middle" class="zone-label">SECTION B</text>
           <g id="arcsLayer"></g>
           <g id="nodesLayer"></g>
         </svg>
-        <p class="hint">Conflit structurel : <b>P7</b> est en amont de <b>T1</b> et <b>T4</b> — au marquage initial, les deux axes sont candidats pour démarrer, mais un seul jeton est disponible.</p>
+        <p class="hint">Conflit structurel : <b>L</b> est en amont de <b>T1A</b> et <b>T1B</b> — au marquage initial, les deux axes sont candidats pour passer au vert, mais un seul jeton est disponible dans L (exactement la notion « Rdp avec conflit » du cours).</p>
       </div>
 
       <div class="panel" style="margin-top:18px;">
         <h2>Carrefour — vue physique</h2>
         <div class="carrefour">
           <div class="axe">
-            <div class="axe-label">AXE A</div>
+            <div class="axe-label">SECTION A</div>
             <div class="feu">
               <div class="lamp r" id="lampAr"></div>
               <div class="lamp o" id="lampAo"></div>
@@ -221,7 +211,7 @@
             </div>
           </div>
           <div class="axe">
-            <div class="axe-label">AXE B</div>
+            <div class="axe-label">SECTION B</div>
             <div class="feu">
               <div class="lamp r" id="lampBr"></div>
               <div class="lamp o" id="lampBo"></div>
@@ -232,7 +222,6 @@
       </div>
     </div>
 
-    <!-- RIGHT: controls + state -->
     <div>
       <div class="panel">
         <h2>Commandes de franchissement</h2>
@@ -265,24 +254,36 @@
 
 <script>
 /* ---------- Modèle du RDP ---------- */
-const places = ["P1","P2","P3","P4","P5","P6","P7"];
-const placeNames = {
-  P1:"Axe A · Rouge", P2:"Axe A · Vert", P3:"Axe A · Orange",
-  P4:"Axe B · Rouge", P5:"Axe B · Vert", P6:"Axe B · Orange",
-  P7:"Carrefour libre"
-};
-const transitions = ["T1","T2","T3","T4","T5","T6"];
-const net = {
-  T1:{pre:{P1:1,P7:1}, post:{P2:1}},
-  T2:{pre:{P2:1},       post:{P3:1}},
-  T3:{pre:{P3:1},       post:{P1:1,P7:1}},
-  T4:{pre:{P4:1,P7:1}, post:{P5:1}},
-  T5:{pre:{P5:1},       post:{P6:1}},
-  T6:{pre:{P6:1},       post:{P4:1,P7:1}},
-};
-const initialMarking = {P1:1,P2:0,P3:0,P4:1,P5:0,P6:0,P7:1};
+function axisPlaces(s){ return [`Ra${s}`,`Re${s}`,`Oa${s}`,`Oe${s}`,`Va${s}`,`Ve${s}`]; }
+const places = [...axisPlaces("A"), ...axisPlaces("B"), "L"];
+const placeNames = {};
+["A","B"].forEach(s=>{
+  placeNames[`Ra${s}`]=`${s} · Rouge allumé`;
+  placeNames[`Re${s}`]=`${s} · Rouge éteint`;
+  placeNames[`Oa${s}`]=`${s} · Orange allumé`;
+  placeNames[`Oe${s}`]=`${s} · Orange éteint`;
+  placeNames[`Va${s}`]=`${s} · Vert allumé`;
+  placeNames[`Ve${s}`]=`${s} · Vert éteint`;
+});
+placeNames.L = "Carrefour libre";
+
+function axisNet(s){
+  return {
+    [`T1${s}`]:{pre:{[`Ra${s}`]:1,[`Ve${s}`]:1,L:1}, post:{[`Re${s}`]:1,[`Va${s}`]:1}},
+    [`T2${s}`]:{pre:{[`Va${s}`]:1,[`Oe${s}`]:1},       post:{[`Ve${s}`]:1,[`Oa${s}`]:1,L:1}},
+    [`T3${s}`]:{pre:{[`Oa${s}`]:1,[`Re${s}`]:1},       post:{[`Oe${s}`]:1,[`Ra${s}`]:1}},
+  };
+}
+const net = {...axisNet("A"), ...axisNet("B")};
+const transitions = Object.keys(net);
+
+const initialMarking = {};
+places.forEach(p=>initialMarking[p]=0);
+["A","B"].forEach(s=>{ initialMarking[`Ra${s}`]=1; initialMarking[`Oe${s}`]=1; initialMarking[`Ve${s}`]=1; });
+initialMarking.L = 1;
 let marking = {...initialMarking};
-const autoSequence = ["T1","T2","T3","T4","T5","T6"];
+
+const autoSequence = ["T1A","T2A","T3A","T1B","T2B","T3B"];
 let seqIndex = 0;
 let playing = false;
 let timer = null;
@@ -299,80 +300,89 @@ function fire(t){
   Object.keys(pre).forEach(p => marking[p] -= pre[p]);
   Object.keys(post).forEach(p => marking[p] += post[p]);
   history.push(t);
-  seqIndex = autoSequence.indexOf(t) >= 0 ? (autoSequence.indexOf(t)+1) % autoSequence.length : seqIndex;
+  const idx = autoSequence.indexOf(t);
+  if(idx >= 0) seqIndex = (idx+1) % autoSequence.length;
   return true;
 }
 
 /* ---------- Layout du graphe ---------- */
 const layout = {
-  P1:{x:140,y:70},  T1:{x:140,y:150},
-  P2:{x:140,y:230}, T2:{x:140,y:310},
-  P3:{x:140,y:390}, T3:{x:140,y:470},
-  P4:{x:740,y:70},  T4:{x:740,y:150},
-  P5:{x:740,y:230}, T5:{x:740,y:310},
-  P6:{x:740,y:390}, T6:{x:740,y:470},
-  P7:{x:440,y:270}
+  RaA:{x:170,y:70},  T1A:{x:170,y:150},
+  VaA:{x:170,y:230}, T2A:{x:170,y:310},
+  OaA:{x:170,y:390}, T3A:{x:170,y:470},
+  VeA:{x:310,y:150}, ReA:{x:310,y:310}, OeA:{x:310,y:470},
+
+  RaB:{x:830,y:70},  T1B:{x:830,y:150},
+  VaB:{x:830,y:230}, T2B:{x:830,y:310},
+  OaB:{x:830,y:390}, T3B:{x:830,y:470},
+  VeB:{x:690,y:150}, ReB:{x:690,y:310}, OeB:{x:690,y:470},
+
+  L:{x:500,y:230}
 };
 const arcs = [
-  {from:"P1",to:"T1"}, {from:"P7",to:"T1"}, {from:"T1",to:"P2"},
-  {from:"P2",to:"T2"}, {from:"T2",to:"P3"},
-  {from:"P3",to:"T3"}, {from:"T3",to:"P1"}, {from:"T3",to:"P7"},
-  {from:"P4",to:"T4"}, {from:"P7",to:"T4"}, {from:"T4",to:"P5"},
-  {from:"P5",to:"T5"}, {from:"T5",to:"P6"},
-  {from:"P6",to:"T6"}, {from:"T6",to:"P4"}, {from:"T6",to:"P7"},
+  // Section A cycle
+  {from:"RaA",to:"T1A",bend:0}, {from:"T1A",to:"VaA",bend:0},
+  {from:"VaA",to:"T2A",bend:0}, {from:"T2A",to:"OaA",bend:0},
+  {from:"OaA",to:"T3A",bend:0}, {from:"T3A",to:"RaA",bend:-140},
+  {from:"VeA",to:"T1A",bend:0}, {from:"T2A",to:"VeA",bend:60},
+  {from:"ReA",to:"T3A",bend:0}, {from:"T1A",to:"ReA",bend:60},
+  {from:"OeA",to:"T2A",bend:60}, {from:"T3A",to:"OeA",bend:0},
+  // Section B cycle (mirrored)
+  {from:"RaB",to:"T1B",bend:0}, {from:"T1B",to:"VaB",bend:0},
+  {from:"VaB",to:"T2B",bend:0}, {from:"T2B",to:"OaB",bend:0},
+  {from:"OaB",to:"T3B",bend:0}, {from:"T3B",to:"RaB",bend:140},
+  {from:"VeB",to:"T1B",bend:0}, {from:"T2B",to:"VeB",bend:-60},
+  {from:"ReB",to:"T3B",bend:0}, {from:"T1B",to:"ReB",bend:-60},
+  {from:"OeB",to:"T2B",bend:-60}, {from:"T3B",to:"OeB",bend:0},
+  // Ressource partagee
+  {from:"L",to:"T1A",bend:0}, {from:"T2A",to:"L",bend:0},
+  {from:"L",to:"T1B",bend:0}, {from:"T2B",to:"L",bend:0},
 ];
-const R=26; // rayon place
-const TW=16, TH=54; // taille transition
+const R=24, TW=15, TH=48;
 
+function nodeIsPlace(id){ return !/^T/.test(id); }
 function edgePoint(node, dx, dy, isPlace){
-  // point sur le bord du noeud dans la direction (dx,dy)
   const len = Math.hypot(dx,dy) || 1;
   const ux = dx/len, uy = dy/len;
   if(isPlace) return {x:node.x+ux*R, y:node.y+uy*R};
-  // rectangle transition : approx via demi-largeur/hauteur
   const hw=TW/2, hh=TH/2;
   const tx = Math.abs(ux) > 1e-6 ? hw/Math.abs(ux) : Infinity;
   const ty = Math.abs(uy) > 1e-6 ? hh/Math.abs(uy) : Infinity;
   const t = Math.min(tx,ty);
   return {x:node.x+ux*t, y:node.y+uy*t};
 }
-
 function pathFor(a){
   const from = layout[a.from], to = layout[a.to];
-  const fromIsPlace = a.from[0]==="P", toIsPlace = a.to[0]==="P";
-  // pour les arcs touchant P7 (central), on courbe
-  const involvesP7 = a.from==="P7" || a.to==="P7";
-  if(!involvesP7){
-    const dx = to.x-from.x, dy = to.y-from.y;
-    const p1 = edgePoint(from, dx, dy, fromIsPlace);
-    const p2 = edgePoint(to, -dx, -dy, toIsPlace);
+  const dx = to.x-from.x, dy = to.y-from.y;
+  const p1 = edgePoint(from, dx, dy, nodeIsPlace(a.from));
+  const p2 = edgePoint(to, -dx, -dy, nodeIsPlace(a.to));
+  const bend = a.bend || 0;
+  if(bend === 0){
     return `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
-  } else {
-    // courbe quadratique avec point de controle décalé
-    const dx = to.x-from.x, dy = to.y-from.y;
-    const p1 = edgePoint(from, dx, dy, fromIsPlace);
-    const p2 = edgePoint(to, -dx, -dy, toIsPlace);
-    const mx=(p1.x+p2.x)/2, my=(p1.y+p2.y)/2;
-    const bend = (a.from==="P7"||a.to==="P7") ? 40 : 0;
-    const side = (from.x < 440 || to.x < 440) ? -1 : 1;
-    const cx = mx, cy = my + bend*side*-1;
-    return `M${p1.x},${p1.y} Q${cx},${cy-50} ${p2.x},${p2.y}`;
   }
+  const mx=(p1.x+p2.x)/2, my=(p1.y+p2.y)/2;
+  const len = Math.hypot(dx,dy)||1;
+  const nx=-dy/len, ny=dx/len;
+  const cx=mx+nx*(bend/60), cy=my+ny*(bend/60) + (bend>80||bend<-80 ? 0:0);
+  const cx2 = mx + nx*(Math.abs(bend)>90?0.35:0.55)*bend/Math.abs(bend)* (Math.abs(bend));
+  // simplified single control point
+  const off = bend;
+  const ctrlx = mx + nx*off*0.6;
+  const ctrly = my + ny*off*0.6;
+  return `M${p1.x},${p1.y} Q${ctrlx},${ctrly} ${p2.x},${p2.y}`;
 }
 
 /* ---------- Rendu SVG ---------- */
 const arcsLayer = document.getElementById("arcsLayer");
 const nodesLayer = document.getElementById("nodesLayer");
 
-function renderArcs(activeSet){
+function renderArcs(){
   arcsLayer.innerHTML = "";
   arcs.forEach(a=>{
-    const d = pathFor(a);
-    const isActive = activeSet && activeSet.has(a.from+"→"+a.to);
     const path = document.createElementNS("http://www.w3.org/2000/svg","path");
-    path.setAttribute("d", d);
-    path.setAttribute("class", "arc" + (isActive ? " active" : ""));
-    path.setAttribute("marker-end", isActive ? "url(#arrowActive)" : "url(#arrow)");
+    path.setAttribute("d", pathFor(a));
+    path.setAttribute("class", "arc");
+    path.setAttribute("marker-end", "url(#arrow)");
     arcsLayer.appendChild(path);
   });
 }
@@ -380,7 +390,16 @@ function renderArcs(activeSet){
 function renderNodes(){
   nodesLayer.innerHTML = "";
   const en = new Set(enabledSet());
-  const conflictPlaces = {}; // détecter conflit structurel simple pour surbrillance
+  const enabledList = [...en];
+  const conflicting = new Set();
+  enabledList.forEach(t1=>{
+    enabledList.forEach(t2=>{
+      if(t1>=t2) return;
+      const shared = Object.keys(net[t1].pre).some(p=>net[t2].pre[p]);
+      if(shared){ conflicting.add(t1); conflicting.add(t2); }
+    });
+  });
+
   places.forEach(p=>{
     const {x,y} = layout[p];
     const g = document.createElementNS("http://www.w3.org/2000/svg","g");
@@ -390,33 +409,17 @@ function renderNodes(){
     g.appendChild(c);
     if(marking[p] > 0){
       const dot = document.createElementNS("http://www.w3.org/2000/svg","circle");
-      dot.setAttribute("cx",x); dot.setAttribute("cy",y); dot.setAttribute("r",7);
+      dot.setAttribute("cx",x); dot.setAttribute("cy",y); dot.setAttribute("r",6.5);
       dot.setAttribute("class","token");
       g.appendChild(dot);
     }
-    const lbl = document.createElementNS("http://www.w3.org/2000/svg","text");
-    lbl.setAttribute("x",x); lbl.setAttribute("y", y - R - 22);
-    lbl.setAttribute("text-anchor","middle");
-    lbl.setAttribute("class","place-name");
-    lbl.textContent = placeNames[p];
     const lbl2 = document.createElementNS("http://www.w3.org/2000/svg","text");
-    lbl2.setAttribute("x",x); lbl2.setAttribute("y", y - R - 8);
+    lbl2.setAttribute("x",x); lbl2.setAttribute("y", y - R - 6);
     lbl2.setAttribute("text-anchor","middle");
     lbl2.setAttribute("class","place-label");
     lbl2.textContent = p;
-    g.appendChild(lbl); g.appendChild(lbl2);
+    g.appendChild(lbl2);
     nodesLayer.appendChild(g);
-  });
-
-  // détection conflit : transitions enabled partageant une place d'entrée avec marquage insuffisant pour toutes
-  const enabledList = [...en];
-  const conflicting = new Set();
-  enabledList.forEach(t1=>{
-    enabledList.forEach(t2=>{
-      if(t1>=t2) return;
-      const shared = Object.keys(net[t1].pre).some(p=>net[t2].pre[p]);
-      if(shared) { conflicting.add(t1); conflicting.add(t2); }
-    });
   });
 
   transitions.forEach(t=>{
@@ -430,11 +433,10 @@ function renderNodes(){
     if(en.has(t)) cls += " enabled";
     if(conflicting.has(t)) cls += " conflict";
     rect.setAttribute("class", cls);
-    rect.style.transformOrigin = `${x}px ${y}px`;
     rect.addEventListener("click", ()=>{ manualFire(t); });
     g.appendChild(rect);
     const lbl = document.createElementNS("http://www.w3.org/2000/svg","text");
-    lbl.setAttribute("x",x); lbl.setAttribute("y", y+TH/2+18);
+    lbl.setAttribute("x",x); lbl.setAttribute("y", y+TH/2+16);
     lbl.setAttribute("text-anchor","middle");
     lbl.setAttribute("class","trans-label");
     lbl.textContent = t;
@@ -442,11 +444,11 @@ function renderNodes(){
     nodesLayer.appendChild(g);
   });
 
-  renderArcs(null);
+  renderArcs();
 }
 
 /* ---------- Panneaux d'état ---------- */
-function renderMarking(justFired){
+function renderMarking(){
   const host = document.getElementById("markingGrid");
   host.innerHTML = "";
   places.forEach(p=>{
@@ -456,7 +458,6 @@ function renderMarking(justFired){
     host.appendChild(cell);
   });
 }
-
 function renderMatrix(kind){
   const host = document.getElementById("matrixHost");
   let html = `<table class="matrix"><tr><th>P\\T</th>${transitions.map(t=>`<th>${t}</th>`).join("")}</tr>`;
@@ -471,76 +472,42 @@ function renderMatrix(kind){
   html += `</table>`;
   host.innerHTML = html;
 }
-
 function renderLog(){
   const host = document.getElementById("log");
   if(history.length===0){ host.innerHTML = "<em>Aucun franchissement pour l'instant.</em>"; return; }
-  host.innerHTML = "Séquence : " + history.map(t=>`<span>${t}</span>`).join(" → ");
+  host.innerHTML = "Séquence : " + history.map(t=>`<span class="${t[t.length-1]==='B'?'b':''}">${t}</span>`).join(" → ");
   host.scrollTop = host.scrollHeight;
 }
-
 function renderLamps(){
-  const setLamp = (id, lit)=>{
-    const el = document.getElementById(id);
-    el.classList.toggle("lit", lit);
-  };
-  setLamp("lampAr", marking.P1>0); setLamp("lampAo", marking.P3>0); setLamp("lampAv", marking.P2>0);
-  setLamp("lampBr", marking.P4>0); setLamp("lampBo", marking.P6>0); setLamp("lampBv", marking.P5>0);
+  const setLamp = (id, lit)=>{ document.getElementById(id).classList.toggle("lit", lit); };
+  setLamp("lampAr", marking.RaA>0); setLamp("lampAo", marking.OaA>0); setLamp("lampAv", marking.VaA>0);
+  setLamp("lampBr", marking.RaB>0); setLamp("lampBo", marking.OaB>0); setLamp("lampBv", marking.VaB>0);
 }
-
 function renderAll(){
-  renderNodes();
-  renderMarking();
-  renderLog();
-  renderLamps();
+  renderNodes(); renderMarking(); renderLog(); renderLamps();
 }
 
 /* ---------- Interactions ---------- */
-function manualFire(t){
-  if(!isEnabled(t)) return;
-  fire(t);
-  renderAll();
-}
-
+function manualFire(t){ if(isEnabled(t)){ fire(t); renderAll(); } }
 function stepAuto(){
   const candidate = autoSequence[seqIndex];
-  if(isEnabled(candidate)){
-    fire(candidate);
-  } else {
-    // au cas où : tirer la première transition franchissable
-    const any = enabledSet()[0];
-    if(any) fire(any);
-  }
+  if(isEnabled(candidate)){ fire(candidate); }
+  else { const any = enabledSet()[0]; if(any) fire(any); }
   renderAll();
 }
-
 document.getElementById("btnStep").addEventListener("click", stepAuto);
 document.getElementById("btnReset").addEventListener("click", ()=>{
-  marking = {...initialMarking};
-  seqIndex = 0;
-  history = [];
-  stopPlay();
-  renderAll();
+  marking = {...initialMarking}; seqIndex = 0; history = []; stopPlay(); renderAll();
 });
-
 const btnPlay = document.getElementById("btnPlay");
 function startPlay(){
-  playing = true;
-  btnPlay.textContent = "⏸ Pause";
+  playing = true; btnPlay.textContent = "⏸ Pause";
   const speed = document.getElementById("speed");
-  const tick = ()=>{
-    stepAuto();
-    timer = setTimeout(tick, Number(speed.value));
-  };
+  const tick = ()=>{ stepAuto(); timer = setTimeout(tick, Number(speed.value)); };
   tick();
 }
-function stopPlay(){
-  playing = false;
-  btnPlay.textContent = "▶ Lecture auto";
-  clearTimeout(timer);
-}
+function stopPlay(){ playing = false; btnPlay.textContent = "▶ Lecture auto"; clearTimeout(timer); }
 btnPlay.addEventListener("click", ()=>{ playing ? stopPlay() : startPlay(); });
-
 document.querySelectorAll(".tab").forEach(tab=>{
   tab.addEventListener("click", ()=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
@@ -549,7 +516,6 @@ document.querySelectorAll(".tab").forEach(tab=>{
   });
 });
 
-/* ---------- Init ---------- */
 renderMatrix("pre");
 renderAll();
 </script>
