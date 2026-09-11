@@ -73,7 +73,7 @@
 
   .layout{
     display:grid;
-    grid-template-columns:1.6fr 1fr;
+    grid-template-columns:1.5fr 1fr;
     gap:20px;
     margin-top:26px;
   }
@@ -101,14 +101,14 @@
     display:inline-block;
   }
 
-  #graphSvg{width:100%; height:auto; display:block;}
+  #graphSvg{width:100%; height:auto; display:block; max-height:760px;}
   .place-circle{fill:var(--asphalt-2); stroke:var(--steel); stroke-width:2;}
-  .place-label{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:10.5px;}
+  .place-label{fill:var(--paint); font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600;}
   .token{fill:var(--amber);}
   .trans-bar{fill:#3a4048; stroke:var(--steel-dim); stroke-width:1.5; cursor:default; transition:fill .25s, stroke .25s, filter .25s;}
   .trans-bar.enabled{fill:#3f5240; stroke:var(--green); cursor:pointer; filter:drop-shadow(0 0 5px rgba(76,175,110,0.45));}
   .trans-bar.conflict{stroke:var(--conflict); filter:drop-shadow(0 0 6px rgba(200,107,216,0.55));}
-  .trans-label{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:11px; pointer-events:none;}
+  .trans-label{fill:var(--paint-dim); font-family:'IBM Plex Mono',monospace; font-size:10.5px; pointer-events:none;}
   .arc{stroke:var(--steel-dim); stroke-width:1.5; fill:none;}
 
   .controls{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px;}
@@ -153,8 +153,8 @@
   .mk-cell.hot{border-color:var(--amber);}
   .mk-cell.hot .v{color:var(--amber);}
 
-  table.matrix{border-collapse:collapse; width:100%; font-family:'IBM Plex Mono',monospace; font-size:11px; margin-bottom:6px;}
-  table.matrix th, table.matrix td{border:1px solid var(--line); text-align:center; padding:5px 4px; color:var(--paint-dim);}
+  table.matrix{border-collapse:collapse; width:100%; font-family:'IBM Plex Mono',monospace; font-size:10.5px; margin-bottom:6px;}
+  table.matrix th, table.matrix td{border:1px solid var(--line); text-align:center; padding:5px 3px; color:var(--paint-dim);}
   table.matrix th{color:var(--steel); font-weight:500;}
   table.matrix td.nz{color:var(--paint); font-weight:600;}
 
@@ -171,18 +171,18 @@
 <body>
 <div class="wrap">
   <header>
-    <p class="kicker">RÉSEAUX DE PETRI — R = (P, T, Pre, Post) · Exercice 2 (Figure 2), section unique</p>
-    <h1>RDP du carrefour — un seul axe (feu tricolore)</h1>
-    <p>Places : <b>Ra</b> Rouge allumé, <b>Re</b> Rouge éteint, <b>Oa</b> Orange allumé, <b>Oe</b> Orange éteint, <b>Va</b> Vert allumé, <b>Ve</b> Vert éteint. Le réseau comporte <b>4 transitions</b> (comme sur la Figure 2) : la place <b>Oa</b> est traversée deux fois par cycle, une fois en venant du rouge, une fois en venant du vert.</p>
-    <div class="note"><b>Correction appliquée :</b> sur la photo, la place tout en bas est étiquetée « Re » mais il s'agit en réalité de <b>Ve</b> (Vert éteint) — c'est elle qui porte le jeton initial avec Ra et Oe, puisqu'au démarrage le feu est rouge donc le vert est éteint.</div>
-    <div class="note"><b>Règle de franchissement (invariant d'exclusion) :</b> à tout instant, un seul des trois feux est allumé — Ra=1 ⇒ Oe=1 et Ve=1 ; Oa=1 ⇒ Re=1 et Ve=1 ; Va=1 ⇒ Re=1 et Oe=1. La séquence de franchissement est <b>Ra → Oa → Va → Oa → Ra → Oa → Va → Oa → ...</b> (T1, T2, T3, T4, T1, T2, T3, T4, ...). Comme Oa est atteint par deux chemins différents, les transitions <b>T2</b> (Oa→Va) et <b>T4</b> (Oa→Ra) partagent la même place d'entrée : c'est un <b>conflit structurel</b> — les deux sont franchissables dès que Oa est marqué, seule la discipline de la séquence choisit laquelle tirer.</div>
+    <p class="kicker">RÉSEAUX DE PETRI — R = (P, T, Pre, Post) · Figure 2, section unique</p>
+    <h1>RDP du carrefour — disposition fidèle à la Figure 2</h1>
+    <p>Même agencement que sur la copie : <b>Ra</b> en haut, <b>Re</b> juste en dessous, la paire <b>Oa / Oe</b> à droite, <b>Va</b> plus bas, et <b>Ve</b> tout en bas. Quatre transitions relient ces places dans le même ordre vertical que la photo, avec les deux grandes courbes à gauche qui contournent la colonne centrale.</p>
+    <div class="note"><b>Seule correction :</b> la place tout en bas, étiquetée « Re » sur la copie, est bien <b>Ve</b> (Vert éteint) — elle porte le jeton initial avec Ra et Oe, puisque le feu démarre au rouge (vert et orange éteints).</div>
+    <div class="note"><b>Franchissement :</b> Ra=1 ⇒ Oe=1 et Ve=1 · Oa=1 ⇒ Re=1 et Ve=1 · Va=1 ⇒ Re=1 et Oe=1. Séquence : <b>Ra → Oa → Va → Oa → Ra → ...</b>. La place <b>Oa</b> étant traversée deux fois, les transitions Oa→Va et Oa→Ra sont en <b>conflit structurel</b> (mises en violet ci-dessous quand les deux sont franchissables).</div>
   </header>
 
   <div class="layout">
     <div>
       <div class="panel">
-        <h2>Graphe du réseau (section unique, 4 transitions)</h2>
-        <svg id="graphSvg" viewBox="0 0 700 500" xmlns="http://www.w3.org/2000/svg">
+        <h2>Graphe du réseau (disposition Figure 2)</h2>
+        <svg id="graphSvg" viewBox="0 0 680 740" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="var(--steel-dim)"></path>
@@ -191,7 +191,7 @@
           <g id="arcsLayer"></g>
           <g id="nodesLayer"></g>
         </svg>
-        <p class="hint">Transitions en <b>violet</b> : conflit (elles sont franchissables en même temps mais se disputent le même jeton dans Oa). Cliquez sur une transition en surbrillance verte pour la franchir manuellement.</p>
+        <p class="hint">Transitions en <b>violet</b> : conflit structurel (Oa→Va et Oa→Ra se disputent le même jeton dans Oa). Cliquez sur une transition en vert pour la franchir manuellement.</p>
       </div>
 
       <div class="panel" style="margin-top:18px;">
@@ -237,7 +237,7 @@
 </div>
 
 <script>
-/* ---------- Modèle du RDP (une seule section, 4 transitions) ---------- */
+/* ---------- Modèle du RDP (disposition Figure 2) ---------- */
 const places = ["Ra","Re","Oa","Oe","Va","Ve"];
 const placeNames = {
   Ra:"Rouge allumé", Re:"Rouge éteint",
@@ -245,18 +245,19 @@ const placeNames = {
   Va:"Vert allumé", Ve:"Vert éteint"
 };
 
+// noms des transitions = rôle (couleur source -> couleur cible)
 const net = {
-  T1:{pre:{Ra:1, Oe:1}, post:{Re:1, Oa:1}},   // Rouge -> Orange
-  T2:{pre:{Oa:1, Ve:1}, post:{Oe:1, Va:1}},   // Orange (venant du rouge) -> Vert
-  T3:{pre:{Va:1, Oe:1}, post:{Ve:1, Oa:1}},   // Vert -> Orange
-  T4:{pre:{Oa:1, Re:1}, post:{Oe:1, Ra:1}},   // Orange (venant du vert) -> Rouge
+  T_RO:{pre:{Ra:1, Oe:1}, post:{Re:1, Oa:1}},   // Rouge -> Orange
+  T_OV:{pre:{Oa:1, Ve:1}, post:{Oe:1, Va:1}},   // Orange (venant du rouge) -> Vert
+  T_VO:{pre:{Va:1, Oe:1}, post:{Ve:1, Oa:1}},   // Vert -> Orange
+  T_OR:{pre:{Oa:1, Re:1}, post:{Oe:1, Ra:1}},   // Orange (venant du vert) -> Rouge
 };
 const transitions = Object.keys(net);
 
 const initialMarking = {Ra:1, Re:0, Oa:0, Oe:1, Va:0, Ve:1};
 let marking = {...initialMarking};
 
-const autoSequence = ["T1","T2","T3","T4"];
+const autoSequence = ["T_RO","T_OV","T_VO","T_OR"];
 let seqIndex = 0;
 let playing = false;
 let timer = null;
@@ -278,39 +279,44 @@ function fire(t){
   return true;
 }
 
-/* ---------- Layout du graphe ---------- */
+/* ---------- Layout — même ordre vertical que la Figure 2 ---------- */
+// T_OR (haut, produit Ra) -> Ra -> T_RO -> Re -> [Oa/Oe à droite] -> T_OV -> Va -> T_VO -> Ve (bas)
 const layout = {
-  Ra:{x:170,y:60},
-  T1:{x:170,y:140},
-  Oa:{x:170,y:230},
-  T2:{x:170,y:320},
-  Va:{x:170,y:410},
-  T3:{x:340,y:410},
-  T4:{x:340,y:140},
-  Re:{x:530,y:140},
-  Oe:{x:530,y:270},
-  Ve:{x:530,y:410}
+  T_OR:{x:220,y:50},
+  Ra:{x:220,y:130},
+  T_RO:{x:220,y:210},
+  Re:{x:220,y:290},
+  Oa:{x:450,y:350},
+  Oe:{x:610,y:350},
+  T_OV:{x:220,y:430},
+  Va:{x:220,y:510},
+  T_VO:{x:220,y:590},
+  Ve:{x:220,y:670},
 };
 const arcs = [
-  {from:"Ra",to:"T1",bend:0},
-  {from:"T1",to:"Oa",bend:0},
-  {from:"Oe",to:"T1",bend:0},
-  {from:"T1",to:"Re",bend:0},
+  // grande courbe gauche : Re alimente T_OR (contourne Ra)
+  {from:"Re",to:"T_OR",bend:-180},
+  {from:"T_OR",to:"Ra",bend:0},
+  {from:"Ra",to:"T_RO",bend:0},
+  {from:"T_RO",to:"Re",bend:0},
 
-  {from:"Oa",to:"T2",bend:0},
-  {from:"T2",to:"Va",bend:0},
-  {from:"Ve",to:"T2",bend:0},
-  {from:"T2",to:"Oe",bend:0},
+  // liaisons Oa/Oe <-> T_OR et T_RO (croisements à droite, comme la Figure 2)
+  {from:"Oa",to:"T_OR",bend:0},
+  {from:"T_OR",to:"Oe",bend:0},
+  {from:"Oe",to:"T_RO",bend:0},
+  {from:"T_RO",to:"Oa",bend:0},
 
-  {from:"Va",to:"T3",bend:0},
-  {from:"T3",to:"Oa",bend:-70},
-  {from:"Oe",to:"T3",bend:0},
-  {from:"T3",to:"Ve",bend:0},
+  // liaisons Oa/Oe <-> T_OV et T_VO
+  {from:"Oa",to:"T_OV",bend:0},
+  {from:"T_OV",to:"Oe",bend:0},
+  {from:"Oe",to:"T_VO",bend:0},
+  {from:"T_VO",to:"Oa",bend:0},
 
-  {from:"Oa",to:"T4",bend:70},
-  {from:"T4",to:"Ra",bend:0},
-  {from:"Re",to:"T4",bend:0},
-  {from:"T4",to:"Oe",bend:0},
+  // grande courbe gauche : Ve alimente T_OV (contourne Va)
+  {from:"Ve",to:"T_OV",bend:-180},
+  {from:"T_OV",to:"Va",bend:0},
+  {from:"Va",to:"T_VO",bend:0},
+  {from:"T_VO",to:"Ve",bend:0},
 ];
 const R=24, TW=15, TH=48;
 
@@ -384,8 +390,9 @@ function renderNodes(){
       g.appendChild(dot);
     }
     const lbl2 = document.createElementNS("http://www.w3.org/2000/svg","text");
-    lbl2.setAttribute("x",x); lbl2.setAttribute("y", y - R - 6);
-    lbl2.setAttribute("text-anchor","middle");
+    lbl2.setAttribute("x", x + (p==="Oa"||p==="Oe" ? R+8 : 0));
+    lbl2.setAttribute("y", p==="Oa"||p==="Oe" ? y+4 : y - R - 8);
+    lbl2.setAttribute("text-anchor", p==="Oa"||p==="Oe" ? "start" : "middle");
     lbl2.setAttribute("class","place-label");
     lbl2.textContent = p;
     g.appendChild(lbl2);
@@ -406,8 +413,8 @@ function renderNodes(){
     rect.addEventListener("click", ()=>{ manualFire(t); });
     g.appendChild(rect);
     const lbl = document.createElementNS("http://www.w3.org/2000/svg","text");
-    lbl.setAttribute("x",x); lbl.setAttribute("y", y+TH/2+16);
-    lbl.setAttribute("text-anchor","middle");
+    lbl.setAttribute("x", x - TW/2 - 8); lbl.setAttribute("y", y+3);
+    lbl.setAttribute("text-anchor","end");
     lbl.setAttribute("class","trans-label");
     lbl.textContent = t;
     g.appendChild(lbl);
@@ -430,7 +437,7 @@ function renderMarking(){
 }
 function renderMatrix(kind){
   const host = document.getElementById("matrixHost");
-  let html = `<table class="matrix"><tr><th>P\\T</th>${transitions.map(t=>`<th>${t}</th>`).join("")}</tr>`;
+  let html = `<table class="matrix"><tr><th>P\\T</th>${transitions.map(t=>`<th>${t.replace('T_','')}</th>`).join("")}</tr>`;
   places.forEach(p=>{
     html += `<tr><th>${p}</th>`;
     transitions.forEach(t=>{
@@ -445,7 +452,7 @@ function renderMatrix(kind){
 function renderLog(){
   const host = document.getElementById("log");
   if(history.length===0){ host.innerHTML = "<em>Aucun franchissement pour l'instant.</em>"; return; }
-  host.innerHTML = "Séquence : " + history.map(t=>`<span>${t}</span>`).join(" → ");
+  host.innerHTML = "Séquence : " + history.map(t=>`<span>${t.replace('T_','')}</span>`).join(" → ");
   host.scrollTop = host.scrollHeight;
 }
 function renderLamps(){
