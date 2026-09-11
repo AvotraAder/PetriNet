@@ -101,7 +101,7 @@
     display:inline-block;
   }
 
-  #graphSvg{width:100%; height:auto; display:block; max-height:760px;}
+  #graphSvg{width:100%; height:auto; display:block; max-height:820px;}
   .place-circle{fill:var(--asphalt-2); stroke:var(--steel); stroke-width:2;}
   .place-label{fill:var(--paint); font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600;}
   .token{fill:var(--amber);}
@@ -182,7 +182,7 @@
     <div>
       <div class="panel">
         <h2>Graphe du réseau (disposition Figure 2)</h2>
-        <svg id="graphSvg" viewBox="0 0 680 740" xmlns="http://www.w3.org/2000/svg">
+        <svg id="graphSvg" viewBox="0 0 700 820" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="var(--steel-dim)"></path>
@@ -245,12 +245,11 @@ const placeNames = {
   Va:"Vert allumé", Ve:"Vert éteint"
 };
 
-// noms des transitions = rôle (couleur source -> couleur cible)
 const net = {
-  T_RO:{pre:{Ra:1, Oe:1}, post:{Re:1, Oa:1}},   // Rouge -> Orange
-  T_OV:{pre:{Oa:1, Ve:1}, post:{Oe:1, Va:1}},   // Orange (venant du rouge) -> Vert
-  T_VO:{pre:{Va:1, Oe:1}, post:{Ve:1, Oa:1}},   // Vert -> Orange
-  T_OR:{pre:{Oa:1, Re:1}, post:{Oe:1, Ra:1}},   // Orange (venant du vert) -> Rouge
+  T_RO:{pre:{Ra:1, Oe:1}, post:{Re:1, Oa:1}},
+  T_OV:{pre:{Oa:1, Ve:1}, post:{Oe:1, Va:1}},
+  T_VO:{pre:{Va:1, Oe:1}, post:{Ve:1, Oa:1}},
+  T_OR:{pre:{Oa:1, Re:1}, post:{Oe:1, Ra:1}},
 };
 const transitions = Object.keys(net);
 
@@ -280,44 +279,45 @@ function fire(t){
 }
 
 /* ---------- Layout — même ordre vertical que la Figure 2 ---------- */
-// T_OR (haut, produit Ra) -> Ra -> T_RO -> Re -> [Oa/Oe à droite] -> T_OV -> Va -> T_VO -> Ve (bas)
 const layout = {
-  T_OR:{x:220,y:50},
-  Ra:{x:220,y:130},
-  T_RO:{x:220,y:210},
-  Re:{x:220,y:290},
-  Oa:{x:450,y:350},
-  Oe:{x:610,y:350},
-  T_OV:{x:220,y:430},
-  Va:{x:220,y:510},
-  T_VO:{x:220,y:590},
-  Ve:{x:220,y:670},
+  T_OR:{x:250,y:90},
+  Ra:{x:250,y:180},
+  T_RO:{x:250,y:270},
+  Re:{x:250,y:360},
+  Oa:{x:430,y:420},
+  Oe:{x:570,y:420},
+  T_OV:{x:250,y:480},
+  Va:{x:250,y:570},
+  T_VO:{x:250,y:660},
+  Ve:{x:250,y:750},
 };
+
 const arcs = [
-  // grande courbe gauche : Re alimente T_OR (contourne Ra)
-  {from:"Re",to:"T_OR",bend:-180},
+  // Ligne verticale principale (centre)
   {from:"T_OR",to:"Ra",bend:0},
   {from:"Ra",to:"T_RO",bend:0},
   {from:"T_RO",to:"Re",bend:0},
-
-  // liaisons Oa/Oe <-> T_OR et T_RO (croisements à droite, comme la Figure 2)
-  {from:"Oa",to:"T_OR",bend:0},
-  {from:"T_OR",to:"Oe",bend:0},
-  {from:"Oe",to:"T_RO",bend:0},
-  {from:"T_RO",to:"Oa",bend:0},
-
-  // liaisons Oa/Oe <-> T_OV et T_VO
-  {from:"Oa",to:"T_OV",bend:0},
-  {from:"T_OV",to:"Oe",bend:0},
-  {from:"Oe",to:"T_VO",bend:0},
-  {from:"T_VO",to:"Oa",bend:0},
-
-  // grande courbe gauche : Ve alimente T_OV (contourne Va)
-  {from:"Ve",to:"T_OV",bend:-180},
   {from:"T_OV",to:"Va",bend:0},
   {from:"Va",to:"T_VO",bend:0},
   {from:"T_VO",to:"Ve",bend:0},
+
+  // Grandes boucles de retour (contournement par la gauche)
+  {from:"Re",to:"T_OR",bend:-220},
+  {from:"Ve",to:"T_OV",bend:-220},
+
+  // Connexions de la partie supérieure vers Oa / Oe
+  {from:"T_OR",to:"Oe",bend:-170}, 
+  {from:"Oa",to:"T_OR",bend:0},    
+  {from:"Oe",to:"T_RO",bend:0},    
+  {from:"T_RO",to:"Oa",bend:50},   
+
+  // Connexions de la partie inférieure vers Oa / Oe
+  {from:"Oa",to:"T_OV",bend:0},    
+  {from:"T_OV",to:"Oe",bend:110},  
+  {from:"Oe",to:"T_VO",bend:0},    
+  {from:"T_VO",to:"Oa",bend:80},   
 ];
+
 const R=24, TW=15, TH=48;
 
 function nodeIsPlace(id){ return !/^T/.test(id); }
