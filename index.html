@@ -1,12 +1,603 @@
 <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simulation RDP — Carrefour</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulation RDP — Carrefour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* --- Variables CSS : Thèmes --- */
+  :root {
+    --bg-body: #f3f4f6;
+    --bg-panel: #ffffff;
+    --bg-panel-hover: #f9fafb;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-text: #ffffff;
+    
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --orange: #f97316;
+    --green: #10b981;
+    --conflict: #d946ef;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --dot-color: rgba(0, 0, 0, 0.05);
+  }
+
+  [data-theme="dark"] {
+    --bg-body: #0f172a;
+    --bg-panel: #1e293b;
+    --bg-panel-hover: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    
+    --primary: #6366f1;
+    --primary-hover: #818cf8;
+    --primary-text: #ffffff;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --dot-color: rgba(255, 255, 255, 0.05);
+  }
+
+  /* --- Styles globaux --- */
+  * { box-sizing: border-box; transition: background-color 0.3s ease, border-color 0.3s ease; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background-color: var(--bg-body);
+    background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--text-main);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  
+  /* --- En-tête --- */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--primary);
+    margin: 0;
+    font-weight: 600;
+  }
+  h1 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    margin: 0 0 12px;
+    line-height: 1.2;
+    color: var(--text-main);
+  }
+  header p {
+    max-width: 800px;
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+  }
+  
+  .note {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 12px;
+  }
+  .note b { color: var(--text-main); }
+  .note.conflict-note { border-left-color: var(--conflict); }
+
+  /* --- Bouton Thème --- */
+  .theme-toggle {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+  .theme-toggle:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .theme-toggle:active { transform: translateY(0); }
+
+  /* --- Layout & Panneaux --- */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 32px;
+  }
+  @media (min-width: 1024px) { .layout { grid-template-columns: 1.4fr 1fr; } }
+
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+  }
+  .panel h2 {
+    font-size: 15px;
+    color: var(--text-main);
+    margin: 0 0 20px;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .panel h2::before {
+    content: "";
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+    display: inline-block;
+  }
+
+  /* --- SVG Rendu --- */
+  #graphSvg { width: 100%; height: auto; display: block; max-height: 820px; margin: 0 auto; }
+  .place-circle { fill: var(--bg-body); stroke: var(--text-muted); stroke-width: 2.5; transition: stroke 0.3s, fill 0.3s; }
+  .place-label { fill: var(--text-main); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; transition: fill 0.3s; }
+  .token { fill: var(--amber); }
+  
+  .trans-bar { fill: var(--bg-body); stroke: var(--text-muted); stroke-width: 2; cursor: default; transition: all 0.25s; }
+  .trans-bar.enabled { fill: rgba(16, 185, 129, 0.1); stroke: var(--green); cursor: pointer; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.4)); }
+  .trans-bar.conflict { stroke: var(--conflict); filter: drop-shadow(0 0 6px rgba(217, 70, 239, 0.4)); fill: rgba(217, 70, 239, 0.1); }
+  .trans-label { fill: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; pointer-events: none; transition: fill 0.3s; }
+  
+  .arc { stroke: var(--text-muted); stroke-width: 1.5; fill: none; transition: stroke 0.3s; }
+  .arrow-head { fill: var(--text-muted); transition: fill 0.3s; }
+
+  .hint { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-top: 16px; text-align: center; }
+  .hint b { color: var(--conflict); font-weight: 600; }
+
+  /* --- Contrôles (Boutons et Slider) --- */
+  .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px; }
+  button {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px; font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--bg-body);
+    color: var(--text-main);
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+  button:hover { border-color: var(--text-muted); background: var(--bg-panel-hover); transform: translateY(-1px); }
+  button:active { transform: translateY(1px); }
+  
+  button.primary { background: var(--primary); color: var(--primary-text); border-color: var(--primary); }
+  button.primary:hover { background: var(--primary-hover); }
+
+  .speed-row { display: flex; align-items: center; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text-muted); margin-left: auto; }
+  input[type=range] {
+    accent-color: var(--primary);
+    width: 100px;
+    cursor: pointer;
+  }
+
+  /* --- Carrefour & Feux --- */
+  .carrefour { display: flex; justify-content: center; padding: 10px; }
+  .feu {
+    display: flex; flex-direction: column; gap: 12px;
+    background: #111827; /* Toujours sombre pour réalisme */
+    border: 2px solid #374151;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 10px 15px -3px rgba(0,0,0,0.3);
+  }
+  .lamp {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #1f2937;
+    opacity: 0.2;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 4px 6px rgba(0,0,0,0.4);
+  }
+  .lamp.lit { opacity: 1; }
+  .lamp.r.lit { background: var(--red); box-shadow: 0 0 20px 4px rgba(239, 68, 68, 0.6), inset 0 0 10px rgba(255,255,255,0.4); }
+  .lamp.o.lit { background: var(--orange); box-shadow: 0 0 20px 4px rgba(249, 115, 22, 0.6), inset 0 0 10px rgba(255,255,255,0.4); }
+  .lamp.v.lit { background: var(--green); box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.6), inset 0 0 10px rgba(255,255,255,0.4); }
+
+  /* --- Grille de Marquage --- */
+  .marking-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-align: center;
+    margin-bottom: 24px;
+  }
+  @media (min-width: 480px) { .marking-grid { grid-template-columns: repeat(6, 1fr); } }
+  
+  .mk-cell {
+    background: var(--bg-body); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 4px;
+    transition: all 0.3s ease;
+  }
+  .mk-cell .p { color: var(--text-muted); font-size: 11px; display: block; margin-bottom: 4px; font-weight: 500; }
+  .mk-cell .v { font-size: 16px; font-weight: 700; color: var(--text-main); }
+  .mk-cell.hot { border-color: var(--amber); background: rgba(245, 158, 11, 0.05); }
+  .mk-cell.hot .v { color: var(--amber); }
+
+  /* --- Tableaux (Matrices) --- */
+  .table-responsive { width: 100%; overflow-x: auto; margin-bottom: 12px; }
+  table.matrix {
+    border-collapse: separate; border-spacing: 0; width: 100%;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; min-width: 400px;
+  }
+  table.matrix th, table.matrix td {
+    border-bottom: 1px solid var(--border);
+    text-align: center; padding: 10px; color: var(--text-muted);
+  }
+  table.matrix th { color: var(--text-main); font-weight: 600; background: var(--bg-body); }
+  table.matrix tr th:first-child { border-right: 1px solid var(--border); }
+  table.matrix td.nz { color: var(--text-main); font-weight: 700; }
+  table.matrix tr:last-child td, table.matrix tr:last-child th { border-bottom: none; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab {
+    font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 8px 16px; border-radius: 20px; cursor: pointer;
+    background: var(--bg-body); color: var(--text-muted); border: 1px solid transparent;
+  }
+  .tab.active { background: var(--primary); color: var(--primary-text); box-shadow: var(--shadow-sm); }
+  .tab:hover:not(.active) { background: var(--border); }
+
+  /* --- Logs --- */
+  .log {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-muted);
+    max-height: 120px; overflow-y: auto; line-height: 1.8;
+    background: var(--bg-body); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border);
+    margin-top: 20px;
+  }
+  .log span { color: var(--primary); font-weight: 600; }
+
+  footer { margin-top: 32px; font-size: 13px; color: var(--text-muted); text-align: center; font-family: 'IBM Plex Mono', monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="header-top">
+      <p class="kicker">RÉSEAUX DE PETRI — R = (P, T, Pre, Post)</p>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">☀️</button>
+    </div>
+    <h1>Simulation de Carrefour</h1>
+  </header>
+
+  <div class="layout">
+    <!-- Panneau de gauche : Graphe visuel -->
+    <div>
+      <div class="panel">
+        <h2>Graphe du réseau</h2>
+        <svg id="graphSvg" viewBox="0 0 700 820" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+              <path class="arrow-head" d="M0,0 L10,5 L0,10 z"></path>
+            </marker>
+          </defs>
+          <g id="arcsLayer"></g>
+          <g id="nodesLayer"></g>
+        </svg>
+        <p class="hint">Les transitions actives sont en <span style="color:var(--green);font-weight:600;">Vert</span>. Celles en <span style="color:var(--conflict);font-weight:600;">Violet</span> indiquent un conflit. Cliquez pour franchir.</p>
+      </div>
+
+      <div class="panel" style="margin-top:24px;">
+        <h2>Rendu Physique</h2>
+        <div class="carrefour">
+          <div class="feu">
+            <div class="lamp r" id="lampR"></div>
+            <div class="lamp o" id="lampO"></div>
+            <div class="lamp v" id="lampV"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panneau de droite : Contrôles et Données -->
+    <div>
+      <div class="panel">
+        <h2>Contrôles</h2>
+        <div class="controls">
+          <button class="primary" id="btnPlay">▶ Lecture</button>
+          <button id="btnStep">Pas à pas</button>
+          <button id="btnReset">Reset</button>
+          <div class="speed-row">
+            <span>Vitesse</span>
+            <input type="range" id="speed" min="500" max="2000" step="100" value="1000">
+          </div>
+        </div>
+
+        <h2 style="margin-top:32px;">Marquage (M)</h2>
+        <div class="marking-grid" id="markingGrid"></div>
+
+        <h2 style="margin-top:32px;">Matrices</h2>
+        <div class="tabs">
+          <div class="tab active" data-tab="pre">Pré (W-)</div>
+          <div class="tab" data-tab="post">Post (W+)</div>
+        </div>
+        <div class="table-responsive">
+          <div id="matrixHost"></div>
+        </div>
+
+        <h2 style="margin-top:32px;">Historique</h2>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Modèle : R = (P,T,Pre,Post) · M(Pi) ≥ Pre(Pi,Tj)
+  </footer>
+</div>
+
+<script>
+/* ---------- Gestion du Thème (Dark/Light) ---------- */
+const themeToggleBtn = document.getElementById('themeToggle');
+const htmlEl = document.documentElement;
+
+// Charger le thème depuis le localStorage
+const savedTheme = localStorage.getItem('theme') || 'dark';
+htmlEl.setAttribute('data-theme', savedTheme);
+themeToggleBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggleBtn.addEventListener('click', () => {
+  const currentTheme = htmlEl.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  htmlEl.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  themeToggleBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+});
+
+/* ---------- Modèle du RDP ---------- */
+const places = ["Ra","Re","Oa","Oe","Va","Ve"];
+const net = {
+  T_RO:{pre:{Ra:1, Oe:1}, post:{Re:1, Oa:1}},
+  T_OV:{pre:{Oa:1, Ve:1}, post:{Oe:1, Va:1}},
+  T_VO:{pre:{Va:1, Oe:1}, post:{Ve:1, Oa:1}},
+  T_OR:{pre:{Oa:1, Re:1}, post:{Oe:1, Ra:1}},
+};
+const transitions = Object.keys(net);
+const initialMarking = {Ra:1, Re:0, Oa:0, Oe:1, Va:0, Ve:1};
+let marking = {...initialMarking};
+const autoSequence = ["T_RO","T_OV","T_VO","T_OR"];
+let seqIndex = 0;
+let playing = false;
+let timer = null;
+let historyLog = [];
+
+function isEnabled(t){
+  const pre = net[t].pre;
+  return Object.keys(pre).every(p => marking[p] >= pre[p]);
+}
+function enabledSet(){ return transitions.filter(isEnabled); }
+function fire(t){
+  if(!isEnabled(t)) return false;
+  const {pre, post} = net[t];
+  Object.keys(pre).forEach(p => marking[p] -= pre[p]);
+  Object.keys(post).forEach(p => marking[p] += post[p]);
+  historyLog.push(t);
+  const idx = autoSequence.indexOf(t);
+  if(idx >= 0) seqIndex = (idx+1) % autoSequence.length;
+  return true;
+}
+
+/* ---------- Topologie du Graphe ---------- */
+const layout = {
+  T_OR:{x:250,y:90}, Ra:{x:250,y:180}, T_RO:{x:250,y:270}, Re:{x:250,y:360},
+  Oa:{x:440,y:420}, Oe:{x:580,y:420}, T_OV:{x:250,y:480}, Va:{x:250,y:570},
+  T_VO:{x:250,y:660}, Ve:{x:250,y:750},
+};
+const arcs = [
+  {from:"T_OR",to:"Ra",bend:0}, {from:"Ra",to:"T_RO",bend:0},
+  {from:"T_RO",to:"Re",bend:0}, {from:"T_OV",to:"Va",bend:0},
+  {from:"Va",to:"T_VO",bend:0}, {from:"T_VO",to:"Ve",bend:0},
+  {from:"Re",to:"T_OR",bend:-220}, {from:"Ve",to:"T_OV",bend:-220},
+  {from:"T_OR",to:"Oe",bend:-170}, {from:"Oa",to:"T_OR",bend:0},
+  {from:"Oe",to:"T_RO",bend:0}, {from:"T_RO",to:"Oa",bend:50},
+  {from:"Oa",to:"T_OV",bend:0}, {from:"T_OV",to:"Oe",bend:110},
+  {from:"Oe",to:"T_VO",bend:0}, {from:"T_VO",to:"Oa",bend:80},
+];
+const R=26, TW=16, TH=52;
+
+function nodeIsPlace(id){ return !/^T/.test(id); }
+function edgePoint(node, dx, dy, isPlace){
+  const len = Math.hypot(dx,dy) || 1;
+  const ux = dx/len, uy = dy/len;
+  if(isPlace) return {x:node.x+ux*R, y:node.y+uy*R};
+  const hw=TW/2, hh=TH/2;
+  const tx = Math.abs(ux) > 1e-6 ? hw/Math.abs(ux) : Infinity;
+  const ty = Math.abs(uy) > 1e-6 ? hh/Math.abs(uy) : Infinity;
+  const t = Math.min(tx,ty);
+  return {x:node.x+ux*t, y:node.y+uy*t};
+}
+function pathFor(a){
+  const from = layout[a.from], to = layout[a.to];
+  const dx = to.x-from.x, dy = to.y-from.y;
+  const p1 = edgePoint(from, dx, dy, nodeIsPlace(a.from));
+  const p2 = edgePoint(to, -dx, -dy, nodeIsPlace(a.to));
+  const bend = a.bend || 0;
+  if(bend === 0) return `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
+  const mx=(p1.x+p2.x)/2, my=(p1.y+p2.y)/2;
+  const len = Math.hypot(dx,dy)||1;
+  const nx=-dy/len, ny=dx/len;
+  const ctrlx = mx + nx*bend*0.6;
+  const ctrly = my + ny*bend*0.6;
+  return `M${p1.x},${p1.y} Q${ctrlx},${ctrly} ${p2.x},${p2.y}`;
+}
+
+/* ---------- Rendu SVG ---------- */
+const arcsLayer = document.getElementById("arcsLayer");
+const nodesLayer = document.getElementById("nodesLayer");
+
+function renderArcs(){
+  arcsLayer.innerHTML = "";
+  arcs.forEach(a=>{
+    const path = document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("d", pathFor(a));
+    path.setAttribute("class", "arc");
+    path.setAttribute("marker-end", "url(#arrow)");
+    arcsLayer.appendChild(path);
+  });
+}
+
+function renderNodes(){
+  nodesLayer.innerHTML = "";
+  const en = new Set(enabledSet());
+  const enabledList = [...en];
+  const conflicting = new Set();
+  enabledList.forEach(t1=>{
+    enabledList.forEach(t2=>{
+      if(t1>=t2) return;
+      if(Object.keys(net[t1].pre).some(p=>net[t2].pre[p])){ conflicting.add(t1); conflicting.add(t2); }
+    });
+  });
+
+  places.forEach(p=>{
+    const {x,y} = layout[p];
+    const g = document.createElementNS("http://www.w3.org/2000/svg","g");
+    const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx",x); c.setAttribute("cy",y); c.setAttribute("r",R);
+    c.setAttribute("class","place-circle");
+    g.appendChild(c);
+    if(marking[p] > 0){
+      const dot = document.createElementNS("http://www.w3.org/2000/svg","circle");
+      dot.setAttribute("cx",x); dot.setAttribute("cy",y); dot.setAttribute("r",7);
+      dot.setAttribute("class","token");
+      g.appendChild(dot);
+    }
+    const lbl = document.createElementNS("http://www.w3.org/2000/svg","text");
+    lbl.setAttribute("x", x + (p==="Oa"||p==="Oe" ? R+10 : 0));
+    lbl.setAttribute("y", p==="Oa"||p==="Oe" ? y+5 : y - R - 10);
+    lbl.setAttribute("text-anchor", p==="Oa"||p==="Oe" ? "start" : "middle");
+    lbl.setAttribute("class","place-label");
+    lbl.textContent = p;
+    g.appendChild(lbl);
+    nodesLayer.appendChild(g);
+  });
+
+  transitions.forEach(t=>{
+    const {x,y} = layout[t];
+    const g = document.createElementNS("http://www.w3.org/2000/svg","g");
+    const rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+    rect.setAttribute("x", x-TW/2); rect.setAttribute("y", y-TH/2);
+    rect.setAttribute("width", TW); rect.setAttribute("height", TH);
+    rect.setAttribute("rx", 4);
+    let cls = "trans-bar";
+    if(en.has(t)) cls += " enabled";
+    if(conflicting.has(t)) cls += " conflict";
+    rect.setAttribute("class", cls);
+    rect.addEventListener("click", ()=>{ manualFire(t); });
+    g.appendChild(rect);
+    const lbl = document.createElementNS("http://www.w3.org/2000/svg","text");
+    lbl.setAttribute("x", x - TW/2 - 10); lbl.setAttribute("y", y+4);
+    lbl.setAttribute("text-anchor","end");
+    lbl.setAttribute("class","trans-label");
+    lbl.textContent = t;
+    g.appendChild(lbl);
+    nodesLayer.appendChild(g);
+  });
+
+  renderArcs();
+}
+
+/* ---------- Panneaux d'état ---------- */
+function renderMarking(){
+  const host = document.getElementById("markingGrid");
+  host.innerHTML = "";
+  places.forEach(p=>{
+    const cell = document.createElement("div");
+    cell.className = "mk-cell" + (marking[p] > 0 ? " hot" : "");
+    cell.innerHTML = `<span class="p">${p}</span><span class="v">${marking[p]}</span>`;
+    host.appendChild(cell);
+  });
+}
+
+function renderMatrix(kind){
+  const host = document.getElementById("matrixHost");
+  let html = `<table class="matrix"><tr><th>P\\T</th>${transitions.map(t=>`<th>${t.replace('T_','')}</th>`).join("")}</tr>`;
+  places.forEach(p=>{
+    html += `<tr><th>${p}</th>`;
+    transitions.forEach(t=>{
+      const val = net[t][kind][p] || 0;
+      html += `<td class="${val? 'nz':''}">${val}</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</table>`;
+  host.innerHTML = html;
+}
+
+function renderLog(){
+  const host = document.getElementById("log");
+  if(historyLog.length===0){ host.innerHTML = "<em>En attente de franchissement...</em>"; return; }
+  host.innerHTML = historyLog.map(t=>`<span>${t.replace('T_','')}</span>`).join(" → ");
+  host.scrollTop = host.scrollHeight;
+}
+
+function renderLamps(){
+  document.getElementById("lampR").classList.toggle("lit", marking.Ra>0);
+  document.getElementById("lampO").classList.toggle("lit", marking.Oa>0);
+  document.getElementById("lampV").classList.toggle("lit", marking.Va>0);
+}
+
+function renderAll(){ renderNodes(); renderMarking(); renderLog(); renderLamps(); }
+
+/* ---------- Événements ---------- */
+function manualFire(t){ if(isEnabled(t)){ fire(t); renderAll(); } }
+function stepAuto(){
+  const candidate = autoSequence[seqIndex];
+  if(isEnabled(candidate)) fire(candidate);
+  else { const any = enabledSet()[0]; if(any) fire(any); }
+  renderAll();
+}
+
+document.getElementById("btnStep").addEventListener("click", stepAuto);
+document.getElementById("btnReset").addEventListener("click", ()=>{
+  marking = {...initialMarking}; seqIndex = 0; historyLog = []; stopPlay(); renderAll();
+});
+
+const btnPlay = document.getElementById("btnPlay");
+function startPlay(){
+  playing = true; btnPlay.textContent = "⏸ Pause"; btnPlay.classList.add("playing");
+  const speed = document.getElementById("speed");
+  const tick = ()=>{ stepAuto(); timer = setTimeout(tick, Number(speed.max) - Number(speed.value) + Number(speed.min)); };
+  tick();
+}
+function stopPlay(){ playing = false; btnPlay.textContent = "▶ Lecture"; clearTimeout(timer); }
+btnPlay.addEventListener("click", ()=>{ playing ? stopPlay() : startPlay(); });
+
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    tab.classList.add("active");
+    renderMatrix(tab.dataset.tab);
+  });
+});
+
+renderMatrix("pre");
+renderAll();
+</script>
+</body>
 </html>
