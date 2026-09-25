@@ -1,36 +1,39 @@
 # Script de la vidéo
 
-## 1. Introduction (~30 s)
+« Bonjour, Dans ce projet académique, On a modélisé un feu tricolore à l'aide d'un réseau de Petri dans une plateforme de simulation interactive qui permet de visualiser le réseau et les franchissement des transitions en temps réel. Je vais d'abord vous présenter tout ce qui figure sur la plateforme, puis je ferai la démonstration du franchissement. »
 
-« Bonjour, je m'appelle [Nom]. Dans ce projet académique, j'ai modélisé un carrefour avec un feu tricolore à l'aide d'un réseau de Petri. J'ai aussi développé une plateforme de simulation interactive qui permet de visualiser le réseau et de franchir les transitions en temps réel. Je vais d'abord vous présenter tout ce qui figure sur la plateforme, puis je ferai la démonstration du franchissement. »
 
-## 2. Explication de la plateforme (~2 min 30)
-
-*Montre chaque zone avec la souris pendant que tu parles.*
 
 **Le titre et le thème** *(en haut)*
-« En haut, on lit la définition du réseau : R = (P, T, Pre, Post). Le bouton rond permet de passer du thème sombre au thème clair. »
+« Le bouton rond permet de passer du thème sombre au thème clair. »
+
 
 **Le graphe du réseau** *(panneau de gauche)*
 « Ici, c'est le graphe du réseau de Petri. Les cercles sont les places, les barres verticales sont les transitions, et les flèches sont les arcs. Le petit point orange est un jeton. Il y a 6 places : chaque lampe du feu est représentée par une place *allumée* (Ra, Oa, Va) et une place *éteinte* (Re, Oe, Ve). Il y a 4 transitions : T_RO, du rouge à l'orange ; T_OV, de l'orange au vert ; T_VO, du vert à l'orange ; et T_OR, de l'orange au rouge. »
 
-**Les couleurs des transitions**
-« Une transition en vert est franchissable, c'est-à-dire que toutes ses places d'entrée contiennent assez de jetons. Une transition en violet signale un conflit : plusieurs transitions franchissables partagent une même place d'entrée. Une transition grise n'est pas franchissable. On peut cliquer directement sur une transition verte pour la franchir. »
 
 **Le rendu physique**
 « En dessous, le rendu physique : un feu tricolore qui s'allume selon le marquage. Le rouge est allumé si Ra contient un jeton, l'orange si Oa en contient un, et le vert si Va en contient un. »
 
+
 **Les contrôles** *(panneau de droite)*
 « Le bouton *Lecture* lance la simulation automatique, *Pas à pas* franchit une seule transition à la fois, et *Reset* remet le réseau à l'état initial. Le curseur *Vitesse* règle le rythme de la lecture. »
+
+
 
 **Le marquage**
 « Cette grille affiche le marquage M : le nombre de jetons dans chaque place. Les places qui contiennent un jeton sont surlignées en orange. Au départ, Ra = 1, Oe = 1 et Ve = 1 : le feu est rouge, l'orange et le vert sont éteints. »
 
+
+
 **Les matrices**
 « Ces deux onglets donnent les matrices Pré et Post. Les lignes sont les places, les colonnes sont les transitions. La matrice Pré indique ce que chaque transition consomme, la matrice Post ce qu'elle produit. Par exemple, T_RO consomme Ra et Oe, et produit Re et Oa. »
 
+
 **L'historique**
 « Enfin, l'historique affiche la suite des transitions déjà franchies. »
+
+
 
 ## 3. Le franchissement (~2 min)
 
